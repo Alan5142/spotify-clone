@@ -21,6 +21,7 @@ app.use(express.static(__dirname + "/public/views", {
 app.use('/public/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/public/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 
+app.use(express.json())
 app.use('/api', apiRouter);
 
 const port = process.env.PORT || 5000;
