@@ -1,3 +1,4 @@
 import mongoose from "mongoose";
 
-mongoose.connect('mongodb://localhost:27017/singstereo');
+const mongoUri = process.env.MONGODB_URI || "mongodb://localhost:27017/singstereo";
+mongoose.connect(mongoUri);
