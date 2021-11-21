@@ -1,3 +1,12 @@
 body {
     overflow: hidden;
 }
+
+.ms-n5 {
+    margin-left: -40px;
+}
+
+.main-content {
+    overflow-x: hidden;
+    overflow-y: auto;
+}

@@ -1,7 +1,19 @@
-html, body {
+html,
+body {
     height: 100vh;
 }
 
 .main-content {
-    background-color: #17191b;
+    background-color: #121212;
+}
+
+.no-select {
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+img {
+    pointer-events: none;
+
 }

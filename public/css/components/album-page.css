@@ -1,0 +1,45 @@
+.album-title {
+    font-size: 96px;
+    font-family: 'Concert One'cursive;
+    font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+    .album-title {
+        font-size: 48px;
+    }
+}
+
+.album-cover {
+    width: 300px;
+    height: 300px;
+}
+
+@media screen and (max-width: 768px) {
+    .album-cover {
+        width: 80%;
+        height: auto;
+    }
+}
+
+.album-text {
+    margin-bottom: -20px;
+    font-family: 'Concert One'cursive;
+    font-weight: normal;
+}
+
+@media screen and (max-width: 768px) {
+    .album-text {
+        display: none;
+    }
+}
+
+.album {
+    font-family: 'Concert One'cursive;
+    font-weight: bold;
+}
+
+.play-button {
+    min-width: 64px;
+    min-height: 64px;
+}

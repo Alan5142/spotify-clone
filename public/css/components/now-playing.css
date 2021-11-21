@@ -4,6 +4,12 @@
     max-height: 64px;
 }
 
+@media screen and (max-width: 768px) {
+    .playing-container {
+        max-height: 100px;
+    }
+}
+
 .playing-song-image img {
     width: 64px;
     height: 64px;
@@ -41,7 +47,7 @@
 }
 
 #audio-progress {
-    background-color: grey;
+    background-color: #198754;
 }
 
 @media screen and (max-width: 768px) {
@@ -49,12 +55,13 @@
         width: 100%;
         height: 8px;
     }
+
     #audio-progress {
         background-color: #198754;
     }
 }
 
-.playing-progress:hover > #audio-progress {
+.playing-progress:hover>#audio-progress {
     background-color: #198754;
 }
 
@@ -63,11 +70,11 @@
     height: 8px;
 }
 
-#audio-slider { 
-    position: fixed; 
-    min-height:15px; 
-    min-width:15px; 
-    background: white; 
+#audio-slider {
+    position: fixed;
+    min-height: 15px;
+    min-width: 15px;
+    background: white;
     border-radius: 100%;
     cursor: pointer;
     align-self: flex-end;
@@ -95,11 +102,11 @@
 
 @keyframes nowPlaying {
     0% {
-      transform: translateY(64px);
-      max-height: 0px;
+        transform: translateY(64px);
+        max-height: 0px;
     }
-  
+
     100% {
-      transform: translateY(0px);
+        transform: translateY(0px);
     }
 }

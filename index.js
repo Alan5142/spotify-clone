@@ -11,7 +11,7 @@ const app = express();
 
 // Allow /public/js and /public/css to be served statically
 // This DOES NOT allow to serve files from the /public/views directory
-app.use(['^\/public\/views($|\/)','/public'], express.static(__dirname + "/public"));
+app.use(['^\/public\/views($|\/)', '/public'], express.static(__dirname + "/public"));
 
 app.use(express.static(__dirname + "/public/views", {
     extensions: ["html", "htm"],
@@ -20,6 +20,11 @@ app.use(express.static(__dirname + "/public/views", {
 // Allow to server bootstrap from /public/(css|js) path
 app.use('/public/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/public/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+
+// Serve * from /singstereo to one of the views
+app.use('/singstereo/*', (req, res) => {
+    res.sendFile(__dirname + "/public/views/singstereo.html");
+});
 
 app.use(express.json())
 app.use('/api', apiRouter);

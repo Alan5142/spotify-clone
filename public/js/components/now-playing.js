@@ -29,7 +29,7 @@ template.innerHTML = `
                     </button>
                 </div>
             </div>
-            <div class="d-flex w-100 justify-content-center">
+            <div class="d-flex w-100 justify-content-center pb-2">
                 <p id="current-minutes" class="time-text mb-0 align-self-center me-2">00:00</p>
                 <div id="audio-progress-container" class="progress playing-progress align-self-center">
                     <div id="audio-progress" class="progress-bar d-flex align-items-center justify-content-right" role="progressbar" style="width: 0%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
@@ -186,3 +186,4 @@ class NowPlaying extends HTMLElement {
 }
 
 window.customElements.define('now-playing', NowPlaying);
+export default NowPlaying;
