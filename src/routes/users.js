@@ -1,13 +1,13 @@
 import { Router } from "express";
 import { createUser, getUserById, modifyUser } from "../controllers/user-controller.js";
-import requiresAuth from "../utils/auth.js";
+import { requiresAuth } from "../utils/auth.js";
 
 const router = Router();
 
 // Create user
 router.post('/', async (req, res) => {
     try {
-        await createUser(req.body.name, req.body.email, req.body.password);   
+        await createUser(req.body.name, req.body.email, req.body.password);
         res.status(201).send();
     } catch (error) {
         res.status(400).send({ error: error.message });
@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
 });
 
 // get current authenticated user from database
-router.get('/', requiresAuth,  async (req, res) => {
+router.get('/', requiresAuth, async (req, res) => {
     try {
         const user = await getUserById(req.user.id);
         res.json(user);

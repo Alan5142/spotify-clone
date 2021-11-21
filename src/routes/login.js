@@ -17,7 +17,7 @@ router.post('/user', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
         const jwt = user.generateAuthToken();
-        res.json({ jwt });
+        res.json({ token: jwt });
     } catch (error) {
         console.error(error);
         res.status(500).json(error);
@@ -35,7 +35,7 @@ router.post('/artist', async (req, res) => {
             return res.status(400).json({ msg: 'Invalid credentials' });
         }
         const jwt = artist.generateAuthToken();
-        res.json({ jwt });
+        res.json({ token: jwt });
     } catch (error) {
         console.error(error);
         res.status(500).json(error);
