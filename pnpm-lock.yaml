@@ -4,6 +4,7 @@ specifiers:
   bcryptjs: ^2.4.3
   bootstrap: ^5.1.3
   express: ^4.17.1
+  express-jwt: ^6.1.0
   jsonwebtoken: ^8.5.1
   mongoose: ^6.0.13
   nodemon: ^2.0.15
@@ -12,6 +13,7 @@ dependencies:
   bcryptjs: 2.4.3
   bootstrap: 5.1.3
   express: 4.17.1
+  express-jwt: 6.1.0
   jsonwebtoken: 8.5.1
   mongoose: 6.0.13
 
@@ -87,6 +89,10 @@ packages:
 
   /array-flatten/1.1.1:
     resolution: {integrity: sha1-ml9pkFGx5wczKPKgCJaLZOopVdI=}
+    dev: false
+
+  /async/1.5.2:
+    resolution: {integrity: sha1-7GphrlZIDAw8skHJVhjiCJL5Zyo=}
     dev: false
 
   /balanced-match/1.0.2:
@@ -390,6 +396,20 @@ packages:
   /etag/1.8.1:
     resolution: {integrity: sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=}
     engines: {node: '>= 0.6'}
+    dev: false
+
+  /express-jwt/6.1.0:
+    resolution: {integrity: sha512-mmSR52Ps1FMeGwchroHzEJONWhsobd5KHVVKBffYiUEpZh9iK9wI9ZWkmzY5ROwWQtJLNGHV/VUMLh2M208s4Q==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      async: 1.5.2
+      express-unless: 1.0.0
+      jsonwebtoken: 8.5.1
+      lodash.set: 4.3.2
+    dev: false
+
+  /express-unless/1.0.0:
+    resolution: {integrity: sha512-zXSSClWBPfcSYjg0hcQNompkFN/MxQQ53eyrzm9BYgik2ut2I7PxAf2foVqBRMYCwWaZx/aWodi+uk76npdSAw==}
     dev: false
 
   /express/4.17.1:
@@ -748,6 +768,10 @@ packages:
 
   /lodash.once/4.1.1:
     resolution: {integrity: sha1-DdOXEhPHxW34gJd9UEyI+0cal6w=}
+    dev: false
+
+  /lodash.set/4.3.2:
+    resolution: {integrity: sha1-2HV7HagH3eJIFrDWqEvqGnYjCyM=}
     dev: false
 
   /lowercase-keys/1.0.1:

@@ -34,3 +34,8 @@ export async function createArtist(name, email, password) {
     });
     await user.save();
 }
+
+export async function getArtistByName(name) {
+    const artist = await Artist.findOne({ name });
+    return artist;
+}
