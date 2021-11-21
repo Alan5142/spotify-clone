@@ -1,3 +1,4 @@
+import AlbumItem from "./album-item.js";
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -33,37 +34,30 @@ template.innerHTML = `
     <div class="album-tracks">
         <h2 class="no-select">Tracks</h2>
         <div class="album-tracks-list">
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
-        <p>lorem ipsum</p>
+            <table class="table track-table table-borderless">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Title</th>
+                        <th scope="col">
+                            <i class="fas fa-clock"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="album-tracks-list-body no-select">
+                    <tr>
+                        <th scope="row">1</th>
+                        <td>Future Nostalgia</td>
+                        <td>3:04</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
 <link rel="stylesheet" href="/public/css/components/album-page.css">
 `;
+
 
 class Album extends HTMLElement {
     constructor() {
@@ -88,10 +82,69 @@ class Album extends HTMLElement {
         this.querySelector('.album-title').innerText = this.data.title;
         this.querySelector('.album-artist').innerText = `By ${this.data.artist}`;
         this.querySelector('.album-cover').src = this.data.cover;
+
+        const albumTracks = this.querySelector('.album-tracks-list-body');
+        albumTracks.innerHTML = '';
+        const tracks = [
+            {
+                title: 'Future Nostalgia',
+                duration: '3:04'
+            },
+            {
+                title: 'Don\'t Start Now',
+                duration: '3:03',
+            },
+            {
+                title: 'Cool',
+                duration: '3:29',
+            },
+            {
+                title: 'Physical',
+                duration: '3:13',
+            },
+            {
+                title: 'Levitating',
+                duration: '3:32',
+            },
+            {
+                title: 'Pretty Please',
+                duration: '3:14'
+            },
+            {
+                title: 'Hallucinate',
+                duration: '3:28'
+            },
+            {
+                title: 'Love Again',
+                duration: '4:18'
+            },
+            {
+                title: 'Break My Heart',
+                duration: '3:41'
+            },
+            {
+                title: 'Good In Bed',
+                duration: '3:38'
+            },
+            {
+                title: 'Boys Will Be Boys',
+                duration: '2:46'
+            },
+        ];
+        tracks.forEach((e, i) => {
+            const albumItem = new AlbumItem();
+            albumItem.setAttribute('data', JSON.stringify({
+                ...e,
+                trackNumber: i + 1,
+                albumImage: this.data.cover,
+                artist: this.data.artist,
+            }))
+            albumTracks.appendChild(albumItem);
+        });
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'data') {
+        if (name === 'data' && JSON.parse(newValue) !== this.data) {
             this.data = JSON.parse(newValue);
             this.render();
         }
