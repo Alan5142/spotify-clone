@@ -1,4 +1,5 @@
-import AlbumItem from "./album-item.js";
+import TrackItem from "./track-item.js";
+
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -11,10 +12,8 @@ template.innerHTML = `
         <div class="col-sm-12 col-md-8 d-flex justify-content-end flex-column">
             <h5 class="album-text no-select">Album</h5>
             <h1 class="album-title no-select"></h1>
-            <h5 class="album-artist no-select">
-                <a class="album-artist no-select">
-                
-                </a>
+            <h5 class="no-select">
+                By <a class="album-artist"></a>
             </h5>
         </div>
     </div>
@@ -55,7 +54,6 @@ template.innerHTML = `
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="/public/css/components/album-page.css">
 `;
 
 
@@ -80,7 +78,15 @@ class Album extends HTMLElement {
     render() {
         if (this.data === null) return;
         this.querySelector('.album-title').innerText = this.data.title;
-        this.querySelector('.album-artist').innerText = `By ${this.data.artist}`;
+        const artistNameElement = this.querySelector('.album-artist');
+        artistNameElement.innerText = this.data.artist;
+        artistNameElement.addEventListener('click', () => {
+            const currentUrl = window.location.pathname;
+            const splittedUrl = currentUrl.split('/');
+            const artistId = splittedUrl[3];
+            
+            window.history.pushState({}, '', `/singstereo/artist/${artistId}`);
+        });
         this.querySelector('.album-cover').src = this.data.cover;
 
         const albumTracks = this.querySelector('.album-tracks-list-body');
@@ -88,51 +94,62 @@ class Album extends HTMLElement {
         const tracks = [
             {
                 title: 'Future Nostalgia',
-                duration: '3:04'
+                duration: '3:04',
+                id: '1',
             },
             {
                 title: 'Don\'t Start Now',
                 duration: '3:03',
+                id: '2',
             },
             {
                 title: 'Cool',
                 duration: '3:29',
+                id: '3',
             },
             {
                 title: 'Physical',
                 duration: '3:13',
+                id: '4',
             },
             {
                 title: 'Levitating',
                 duration: '3:32',
+                id: '5',
             },
             {
                 title: 'Pretty Please',
-                duration: '3:14'
+                duration: '3:14',
+                id: '6',
             },
             {
                 title: 'Hallucinate',
-                duration: '3:28'
+                duration: '3:28',
+                id: '7',
             },
             {
                 title: 'Love Again',
-                duration: '4:18'
+                duration: '4:18',
+                id: '8',
             },
             {
                 title: 'Break My Heart',
-                duration: '3:41'
+                duration: '3:41',
+                id: '9',
             },
             {
                 title: 'Good In Bed',
-                duration: '3:38'
+                duration: '3:38',
+                id: '10',
             },
             {
                 title: 'Boys Will Be Boys',
-                duration: '2:46'
+                duration: '2:46',
+                id: '11',
             },
         ];
         tracks.forEach((e, i) => {
-            const albumItem = new AlbumItem();
+            const albumItem = new TrackItem();
             albumItem.setAttribute('data', JSON.stringify({
                 ...e,
                 trackNumber: i + 1,

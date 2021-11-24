@@ -1,3 +1,5 @@
+import AlbumItem from "./album-item.js";
+
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -11,30 +13,20 @@ template.innerHTML = `
             </div>
         </div>
     </div>
-    <div class="artist-page-content ms-2">
+    <div class="artist-page-content ms-3 me-3">
         <div class="artist-page-content-albums">
             <div class="artist-page-content-albums-header">
                 <h2 class="artist-page-content-albums-header-text">Albums</h2>
             </div>
+            <hr>
             <div class="artist-page-content-albums-list">
-                <div class="artist-page-content-albums-list-item">
-                    <div class="artist-page-content-albums-list-item-image">
-                        <img alt="">
-                    </div>
-                    <div class="artist-page-content-albums-list-item-info">
-                        <h2 class="artist-page-content-albums-list-item-info-title">
-                            <span class="artist-page-content-albums-list-item-info-title-text"></span>
-                        </h2>
-                        <p class="artist-page-content-albums-list-item-info-artist">
-                            <span class="artist-page-content-albums-list-item-info-artist-text"></span>
-                        </p>
-                    </div>
-                </div>
+
             </div>
         </div>
     </div>
 </div>
 <link rel="stylesheet" href="/public/css/components/artist-page.css">
+<link rel="stylesheet" href="/public/css/components/album-item.css">
 `;
 
 class ArtistPage extends HTMLElement {
@@ -57,13 +49,22 @@ class ArtistPage extends HTMLElement {
     render() {
         const artistPageHeaderImage = this.querySelector('.artist-page-header');
         const artistPageHeaderInfoNameTextName = this.querySelector('.artist-page-header-info-name-text');
-        
+
         artistPageHeaderImage.style.backgroundImage = `url(${this.data.image})`;
         artistPageHeaderInfoNameTextName.innerText = this.data.name;
-    }
 
-    attachedCallback() {
+        const albumListElement = this.querySelector('.artist-page-content-albums-list');
 
+        const albumItems = this.data.albums.map(album => {
+            const albumItem = new AlbumItem();
+            albumItem.setAttribute('data', JSON.stringify(album));
+            return albumItem;
+        });
+
+        albumListElement.innerHTML = '';
+        albumItems.forEach(albumItem => {
+            albumListElement.appendChild(albumItem);
+        });
     }
 }
 
