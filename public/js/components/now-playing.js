@@ -132,7 +132,6 @@ class NowPlaying extends HTMLElement {
     }
 
     disconnectedCallback() {
-        this.removeEventListener('click', this.onClick);
         this.audio.pause();
         this.audio.remove();
     }
