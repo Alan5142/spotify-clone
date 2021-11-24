@@ -1,0 +1,77 @@
+.album-item {
+    padding-top: 1.5rem;
+}
+
+.album-header {
+    cursor: pointer;
+}
+
+.album-header-image {
+    position: relative;
+}
+
+.album-cover {
+    width: 120px;
+    height: 120px;
+}
+
+.album-play-button {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+
+    width: 32px;
+    height: 32px;
+}
+
+.album-play-button {
+    min-width: 48px;
+    min-height: 48px;
+}
+
+@media screen and (max-width: 768px) {
+    .album-cover {
+        width: 80px;
+        height: 80px;
+    }
+
+    .album-play-button {
+        min-width: 32px;
+        min-height: 32px;
+    }
+
+    .album-item {
+        padding-top: 0;
+    }
+}
+
+.album-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 0.5em;
+}
+
+.album-artist {
+    font-size: 1em;
+    color: #999;
+}
+
+.album-year {
+    font-size: 0.8em;
+    color: #999;
+}
+
+.track-table {
+    color: #a3a1a1;
+}
+
+@media screen and (max-width: 768px) {
+    .album-tracks {
+        display: none;
+    }
+
+    .artist-separator {
+        display: none;
+    }
+    
+}

@@ -49,8 +49,6 @@ template.innerHTML = `
 <link rel="stylesheet" href="/public/css/components/now-playing.css">
 `;
 
-let currentIndex = 0;
-
 class NowPlaying extends HTMLElement {
     constructor() {
         super();
@@ -101,7 +99,15 @@ class NowPlaying extends HTMLElement {
             };
 
             this.audio.onended = () => {
+                console.log('ended');
                 // TODO : play next song
+                const playEventDetail = {
+                    trackId: this.data.id,
+                };
+                const playEvent = new CustomEvent('track-pause', {
+                    detail: playEventDetail,
+                });
+                this.dispatchEvent(playEvent);
             }
         }
     }
@@ -176,12 +182,35 @@ class NowPlaying extends HTMLElement {
                 this.audio.play();
                 playAudioIcon.classList.remove('fa-play');
                 playAudioIcon.classList.add('fa-pause');
+
+                const playEventDetail = {
+                    trackId: this.data.trackId,
+                };
+                const playEvent = new CustomEvent('track-play', {
+                    detail: playEventDetail,
+                    bubbles: true,
+                    composed: true
+                });
+                this.dispatchEvent(playEvent);
+
             } else {
                 this.audio.pause();
                 playAudioIcon.classList.remove('fa-pause');
                 playAudioIcon.classList.add('fa-play');
+
+                const playEventDetail = {
+                    trackId: this.data.id,
+                };
+                const playEvent = new CustomEvent('track-pause', {
+                    detail: playEventDetail,
+                });
+                this.dispatchEvent(playEvent);
             }
         }
+    }
+
+    get currentPlayingTrack() {
+        return this.data.trackId;
     }
 }
 
