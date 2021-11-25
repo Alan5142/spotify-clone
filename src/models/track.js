@@ -5,10 +5,6 @@ const trackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    duration: {
-        type: Number,
-        required: true,
-    },
     album: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Album",
@@ -17,10 +13,6 @@ const trackSchema = new mongoose.Schema({
     artist: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Artist",
-        required: true,
-    },
-    genre: {
-        type: [String],
         required: true,
     },
 });

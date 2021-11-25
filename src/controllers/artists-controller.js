@@ -1,5 +1,7 @@
 import '../data/mongo.js';
+import { upload } from '../data/files.js';
 import Artist from '../models/artist.js';
+import Track from '../models/track.js';
 import { encryptPassword } from "../utils/encrypt.js";
 import Album from '../models/album.js';
 
@@ -46,16 +48,30 @@ export async function createAlbum(artistId, name, releaseDate, tracks, image, de
     if (!artist) {
         throw new Error(`Artist not found: ${artistId}`);
     }
+
     const album = new Album({
         title: name,
         releaseDate,
-        tracks,
         artist: artist._id,
-        image,
         description,
         genres
     });
+    const uploadedImage = await upload(image, album.title, album._id);
+    album.image = uploadedImage;
     artist.albums.push(album);
+
+    const tracksObject = [];
+
+    for (const track of tracks) {
+        const trackObject = new Track({
+            name: track.name,
+            artist: artist._id,
+            album: album._id,
+        });
+        tracksObject.push(trackObject);
+    }
+
+    await album.save();
     await artist.save();
 }
 

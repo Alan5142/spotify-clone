@@ -2,7 +2,9 @@ import { Router } from "express";
 import { createArtist, getArtistById, modifyArtist } from "../controllers/artists-controller.js";
 import { requiresAuth, requiresArtist } from "../utils/auth.js";
 import albumRoutes from "./artist-album.js";
-import { body, validationResult, params } from 'express-validator';
+import expressValidator from 'express-validator';
+
+const { body, validationResult, param } = expressValidator;
 
 const router = Router();
 
@@ -46,7 +48,7 @@ router.get("/",
 // Get artist info by id
 router.get("/:id", 
     requiresAuth,
-    params('id').notEmpty(),
+    param('id').notEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
