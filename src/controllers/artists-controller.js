@@ -37,15 +37,19 @@ export async function modifyArtist(id, name, email, password, description, type)
     await artist.save();
 }
 
-export async function createAlbum(artistId, name, releaseDate) {
+export async function createAlbum(artistId, name, releaseDate, tracks, image, description, genres) {
     const artist = await Artist.findById(artistId);
     if (!artist) {
-        throw new Error('Artist not found');
+        throw new Error(`Artist not found: ${artistId}`);
     }
     const album = new Album({
         title: name,
         releaseDate,
+        tracks,
         artist: artist._id,
+        image,
+        description,
+        genres
     });
     artist.albums.push(album);
     await artist.save();
