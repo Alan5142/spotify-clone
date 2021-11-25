@@ -20,6 +20,7 @@ artistSchema.methods.toJSON = function () {
     delete artist.password;
     artist.id = artist._id;
     delete artist._id;
+    delete artist.__v;
     return artist;
 };
 

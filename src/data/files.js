@@ -4,17 +4,13 @@ import { GridFSBucket } from "mongodb";
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
 
-export async function upload(file, filename, albumId) {
+async function upload(file, filename, bucketName, metadata) {
     const bucket = new GridFSBucket(mongoose.connection.db, {
-        bucketName: "files",
+        bucketName,
         chunkSizeBytes: 1024 * 64,
     });
     const uploadStream = bucket.openUploadStream(filename, {
-        metadata: {
-            filename,
-            contentType: file.mimetype,
-            albumId,
-        },
+        metadata,
     });
     await new Promise((resolve, reject) => {
         uploadStream.write(file.buffer);
@@ -23,6 +19,22 @@ export async function upload(file, filename, albumId) {
         uploadStream.end();
     });
     return uploadStream.id;
+}
+
+export function uploadCover(file, filename, albumId) {
+    return upload(file, filename, "covers", {
+        filename,
+        contentType: file.mimetype,
+        albumId,
+    });
+}
+
+export function uploadTrack(file, filename, albumId) {
+    return upload(file, filename, "tracks", {
+        filename,
+        contentType: file.mimetype,
+        albumId,
+    });
 }
 
 async function getFileMetadata(bucket, id) {
@@ -35,10 +47,10 @@ async function getFileMetadata(bucket, id) {
  * @param {String} fileId 
  * @returns {Promise<{buffer: Buffer, mime: string}>}
  */
-export async function getFile(fileId) {
+export async function getFile(fileId, bucketName) {
     fileId = new ObjectId(fileId);
     const bucket = new GridFSBucket(mongoose.connection.db, {
-        bucketName: "files",
+        bucketName,
     });
     const downloadStream = bucket.openDownloadStream(fileId);
 
@@ -64,7 +76,7 @@ export const coverRouter = Router({ mergeParams: true });
 
 coverRouter.get('/:id', async (req, res) => {
     try {
-        const file = await getFile(req.params.id);
+        const file = await getFile(req.params.id, "covers");
         res.set('Content-Type', file.mime);
         res.send(file.buffer);
     } catch (error) {
@@ -72,3 +84,14 @@ coverRouter.get('/:id', async (req, res) => {
     }
 });
 
+export const trackRouter = Router({ mergeParams: true });
+
+trackRouter.get('/:id', async (req, res) => {
+    try {
+        const file = await getFile(req.params.id, "tracks");
+        res.set('Content-Type', file.mime);
+        res.send(file.buffer);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+});

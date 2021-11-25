@@ -1,7 +1,9 @@
 import expressJwt from "express-jwt";
 
+const secret = process.env.JWT_KEY || 'Secret key';
+
 export const requiresAuth = expressJwt({
-    secret: process.env.JWT_KEY,
+    secret,
     algorithms: ["HS256"],
 });
 

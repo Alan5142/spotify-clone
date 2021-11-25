@@ -1,5 +1,5 @@
 import '../data/mongo.js';
-import { upload } from '../data/files.js';
+import { uploadCover, uploadTrack } from '../data/files.js';
 import Artist from '../models/artist.js';
 import Track from '../models/track.js';
 import { encryptPassword } from "../utils/encrypt.js";
@@ -43,7 +43,7 @@ export async function modifyArtist(id, name, password, description, type) {
     return artist;
 }
 
-export async function createAlbum(artistId, name, releaseDate, tracks, image, description, genres) {
+export async function createAlbum({artistId, name, releaseDate, trackNames, tracks, image, description, genres}) {
     const artist = await Artist.findById(artistId);
     if (!artist) {
         throw new Error(`Artist not found: ${artistId}`);
@@ -56,23 +56,30 @@ export async function createAlbum(artistId, name, releaseDate, tracks, image, de
         description,
         genres
     });
-    const uploadedImage = await upload(image, album.title, album._id);
+    const uploadedImage = await uploadCover(image, album.title, album._id);
     album.image = uploadedImage;
     artist.albums.push(album);
 
     const tracksObject = [];
-
-    for (const track of tracks) {
-        const trackObject = new Track({
-            name: track.name,
-            artist: artist._id,
+    for (let i = 0; i < trackNames.length; i++) {
+        const trackName = trackNames[i];
+        const trackFile = tracks[i];
+        const uploadedTrack = await uploadTrack(trackFile, trackName, album._id);
+        const track = new Track({
+            title: trackName,
+            file: uploadedTrack,
             album: album._id,
+            artist: artist._id
         });
-        tracksObject.push(trackObject);
+        tracksObject.push(track);
     }
+    album.tracks = tracksObject;
+
+    await Track.insertMany(tracksObject);
 
     await album.save();
     await artist.save();
+    return album;
 }
 
 export async function getAlbumById(id){

@@ -4,7 +4,7 @@ import { requiresAuth, requiresArtist } from "../utils/auth.js";
 import albumRoutes from "./artist-album.js";
 import expressValidator from 'express-validator';
 
-const { body, validationResult, param } = expressValidator;
+const { body, validationResult, param, oneOf } = expressValidator;
 
 const router = Router();
 
@@ -74,7 +74,7 @@ router.put('/:id',
     oneOf([body('description').isEmpty(), body('description').notEmpty()]),
     oneOf([body('password').isEmpty(), body('password').isLength({ min: 6 })]),
     oneOf([body('artistType').isEmpty(), body('typeOf').notEmpty().isIn(['Band', 'Soloist'])]),
-    (req, res) => {
+    async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           return res.status(400).json({ errors: errors.array() });
