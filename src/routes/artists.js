@@ -2,15 +2,17 @@ import { Router } from "express";
 import { createArtist, getArtistById } from "../controllers/artists-controller.js";
 import { requiresAuth, requiresArtist } from "../utils/auth.js";
 import albumRoutes from "./artist-album.js";
-import { body, validationResult, params } from 'express-validator';
+import expressValidator from 'express-validator';
+
+const { body, validationResult, param } = expressValidator;
 
 const router = Router();
 
 router.post("/", 
-    body('name').isEmpty(),
+    body('name').notEmpty(),
     body('email', 'Email not Valid').normalizeEmail().isEmail(),
     body('password', 'Password of minimum 6 characters long').isLength({ min: 6 }),
-    body('typeOf').isEmpty().isIn(['Band', 'Soloist']),
+    body('typeOf').notEmpty().isIn(['Band', 'Soloist']),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -46,7 +48,7 @@ router.get("/",
 // Get artist info by id
 router.get("/:id", 
     requiresAuth,
-    params('id').isEmpty(),
+    param('id').isEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

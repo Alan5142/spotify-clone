@@ -2,14 +2,16 @@ import { Router } from 'express';
 import User from '../models/user.js';
 import Artist from '../models/artist.js';
 import { comparePasswords } from '../utils/encrypt.js';
-import { body, validationResult, params } from 'express-validator';
+import expressValidator from 'express-validator';
+
+const { body, validationResult, params } = expressValidator;
 
 const router = Router();
 
 // login with jwt
 router.post('/user', 
-    body('email', 'Not valid Email').normalizeEmail().isEmail(),
-    body('password', 'Password cannot be empty').isEmpty(),
+    body('email', 'Not valid Email').normalizeEmail().notEmpty(),
+    body('password', 'Password cannot be empty').notEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -34,14 +36,14 @@ router.post('/user',
 
 router.post('/artist', 
     body('email', 'Not valid Email').normalizeEmail().isEmail(),
-    body('password', 'Password cannot be empty').isEmpty(),
+    body('password', 'Password cannot be empty').notEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
           return res.status(400).json({ errors: errors.array() });
         }
         try {
-            const artist = await Artist.findOne({ name: req.body.name });
+            const artist = await Artist.findOne({ email: req.body.email });
             if (!artist) {
                 return res.status(400).json({ msg: 'Invalid credentials' });
             }
