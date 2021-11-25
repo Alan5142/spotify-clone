@@ -15,6 +15,7 @@ export async function createArtist(name, email, password, description, type) {
         artistType: type.toLowerCase()
     });
     await user.save();
+    return user;
 }
 
 export async function getArtistById(id) {
@@ -26,10 +27,12 @@ export async function getArtistByName(name) {
     return artist;
 }
 
-export async function modifyArtist(id, name, email, password, description, type) {
+export async function modifyArtist(id, name, password, description, type) {
     const artist = await Artist.findById(id);
+    if (!artist) {
+        throw new Error(`Artist not found: ${albumId}`);
+    }
     artist.name = name || artist.name;
-    artist.email = email || artist.email;
     artist.description = description || artist.description;
     artist.artistType = type || artist.artistType;
     if (password) {
@@ -37,6 +40,7 @@ export async function modifyArtist(id, name, email, password, description, type)
         artist.password = hashedPassword;
     }
     await artist.save();
+    return artist;
 }
 
 export async function createAlbum(artistId, name, releaseDate, tracks, image, description, genres) {
@@ -69,5 +73,22 @@ export async function createAlbum(artistId, name, releaseDate, tracks, image, de
 
     await album.save();
     await artist.save();
+}
+
+export async function getAlbumById(id){
+    return await Album.findById(id);
+}
+
+export async function modifyAlbum(albumId, name, releaseDate, tracks, description, genres) {
+    const album = await Album.findById(albumId);
+    if (!album) {
+        throw new Error(`Album not found: ${albumId}`);
+    }
+    album.title = name || album.name;
+    album.releaseDate = releaseDate || album.releaseDate;
+    album.tracks = tracks || album.tracks;
+    album.description = description || album.description;
+    album.genres = genres || album.genres;
+    await album.save();
     return album;
 }
