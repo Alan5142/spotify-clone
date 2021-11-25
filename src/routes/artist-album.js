@@ -47,7 +47,7 @@ router.post('/',
 //Get album by id
 router.get('/:id',
     requiresAuth,
-    params('is').notEmpty(),
+    param('id').notEmpty(),
     (req, res) =>{
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -68,15 +68,15 @@ router.get('/:id',
 router.put('/:id',
     requiresAuth,
     requiresArtist,
-    params('id').notEmpty(),
+    param('id').notEmpty(),
     oneOf([body('name').isEmpty(), body('name').notEmpty()]),
     oneOf([body('releaseDate').isDate(), body('releaseDate').isEmpty()]),
     oneOf([body('tracks').custom(value => {
         return Array.isArray(value)
     }), body('tracks').isEmpty()]),
-    body('genres').custom(value => {
+    oneOf([body('genres').custom(value => {
         return Array.isArray(value)
-    }),
+    }), body('genres').isEmpty()]),
     (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
