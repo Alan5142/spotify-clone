@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createArtist, getArtistById } from "../controllers/artists-controller.js";
+import { createArtist, getArtistById, modifyArtist } from "../controllers/artists-controller.js";
 import { requiresAuth, requiresArtist } from "../utils/auth.js";
 import albumRoutes from "./artist-album.js";
 import { body, validationResult, params } from 'express-validator';
@@ -7,10 +7,10 @@ import { body, validationResult, params } from 'express-validator';
 const router = Router();
 
 router.post("/", 
-    body('name').isEmpty(),
+    body('name').notEmpty(),
     body('email', 'Email not Valid').normalizeEmail().isEmail(),
     body('password', 'Password of minimum 6 characters long').isLength({ min: 6 }),
-    body('typeOf').isEmpty().isIn(['Band', 'Soloist']),
+    body('typeOf').notEmpty().isIn(['Band', 'Soloist']),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -46,7 +46,7 @@ router.get("/",
 // Get artist info by id
 router.get("/:id", 
     requiresAuth,
-    params('id').isEmpty(),
+    params('id').notEmpty(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -54,9 +54,40 @@ router.get("/:id",
         }
         try {
             const artist = await getArtistById(req.params.id);
+            if(!artist){
+                res.status(404).send({ error: `Artist not found: ${req.params.id}`});
+            }
             res.status(200).json(artist);
         } catch (error) {
             res.status(500).send({ error: error.message });
+        }
+});
+
+//Modify artist info
+router.put('/:id',
+    requiresAuth,
+    requiresArtist,
+    params('id').notEmpty(),
+    oneOf([body('name').isEmpty(), body('name').notEmpty()]),
+    oneOf([body('description').isEmpty(), body('description').notEmpty()]),
+    oneOf([body('password').isEmpty(), body('password').isLength({ min: 6 })]),
+    oneOf([body('artistType').isEmpty(), body('typeOf').notEmpty().isIn(['Band', 'Soloist'])]),
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+          return res.status(400).json({ errors: errors.array() });
+        }
+        try {
+            const artist = await modifyArtist(
+                req.params.id, 
+                req.body.name,
+                req.body.password,
+                req.body.description,
+                req.body.artistType
+            );
+            res.status(200).json(artist);
+        } catch(e){
+            res.status(400).json({ errors: e.message });
         }
 });
 
