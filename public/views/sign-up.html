@@ -16,33 +16,33 @@
         <a href="/" class="title">
             <h1 class="fw-light">SingStereo 🎵</h1>
         </a>
-        <form>
+        <form id="sign-up-form">
             <div class="mb-2">
                 <label for="name" class="form-label">Your name</label>
-                <input type="text" class="form-control" id="name" aria-describedby="name">
+                <input type="text" required class="form-control" id="name" aria-describedby="name">
             </div>
             <div class="mb-2">
                 <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email" aria-describedby="emailHelp">
+                <input type="email" class="form-control" required id="email" aria-describedby="emailHelp">
             </div>
             <div class="mb-2">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" minlength="6" required class="form-control" id="password">
             </div>
             <div class="mb-2">
                 <label for="rep-password" class="form-label">Repeat password</label>
-                <input type="password" class="form-control" id="rep-password">
+                <input type="password" class="form-control" required id="rep-password">
             </div>
             <button type="submit" class="btn btn-success w-100">Submit</button>
         </form>
         <hr>
         <div>
             <p class="fw-light">Already have an account?</p>
-            <button class="btn btn-primary w-100" type="button" onclick="window.location.href='/login'">Log In</button>
+            <button class="btn btn-primary w-100" type="submit" onclick="window.location.href='/login'">Log In</button>
         </div>
     </div>
 
-    <script src="/public/js/login.js"></script>
+    <script type="module" src="/public/js/signup.js"></script>
 </body>
 
 </html>

@@ -16,30 +16,26 @@
         <a href="/" class="title">
             <h1 class="fw-light">SingStereo 🎵</h1>
         </a>
-        <form>
+        <form id="form-login">
             <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                <label for="login-email" class="form-label">Email address</label>
+                <input type="email" class="form-control" id="login-email" aria-describedby="emailHelp">
             </div>
             <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Keep me signed</label>
+                <label for="login-password" class="form-label">Password</label>
+                <input type="password" class="form-control" minlength="6" id="login-password">
             </div>
             <button type="submit" class="btn btn-success w-100">Submit</button>
         </form>
         <hr>
         <div>
             <p class="fw-light">Don't have an account?</p>
-            <button class="btn btn-primary w-100" type="button" onclick="window.location.href='/sign-up'">Sign
+            <button class="btn btn-primary w-100" type="submit" onclick="window.location.href='/sign-up'">Sign
                 Up</button>
         </div>
     </div>
 
-    <script src="/public/js/login.js"></script>
+    <script type="module" src="/public/js/login.js"></script>
 </body>
 
 </html>
