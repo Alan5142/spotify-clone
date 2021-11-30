@@ -1,5 +1,10 @@
 import ArtistPage from './components/artist-page.js';
 import Album from './components/album.js';
+import { getArtistById } from './api-fetcher.js';
+
+if (localStorage.getItem('token') === null) {
+    window.location.href = '/login';
+}
 
 const pushState = window.history.pushState;
 const main = document.querySelector('main');
@@ -30,8 +35,15 @@ async function onUrlChange(url) {
     const splitUrl = url.split('/');
     if (splitUrl.length === 4 && splitUrl[2] === 'artist') {
         const artistId = splitUrl[3];
+        const artist = await getArtistById(artistId);
+        
+        artist.albums.forEach(album => {
+            album.artist = artist.name;
+        });
+
         const artistPage = new ArtistPage();
 
+        /*
         const tracks = [
             {
                 title: 'Future Nostalgia',
@@ -121,8 +133,8 @@ async function onUrlChange(url) {
                     ]
                 }
             ],
-        };
-        artistPage.setAttribute('data', JSON.stringify(artistPageData));
+        };*/
+        artistPage.setAttribute('data', JSON.stringify(artist));
         main.innerHTML = '';
         main.appendChild(artistPage);
     } else if (splitUrl.length === 6 && splitUrl[2] === 'artist' && splitUrl[4] === 'album') {

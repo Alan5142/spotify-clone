@@ -71,7 +71,7 @@ class AlbumItem extends HTMLElement {
 
     render() {
         this.querySelector('.album-cover').src = this.data.cover;
-        this.querySelector('.album-title').textContent = this.data.name;
+        this.querySelector('.album-title').textContent = this.data.title;
         this.querySelector('.album-artist').textContent = this.data.artist;
         const releaseDate = new Date(this.data.releaseDate);
         this.querySelector('.album-year').textContent = releaseDate.getFullYear();
@@ -79,15 +79,26 @@ class AlbumItem extends HTMLElement {
         const albumTracks = this.querySelector('.album-tracks-list-body');
         albumTracks.innerHTML = '';
         const tracks = this.data.tracks;
+        const trackList = tracks.map((track, i) => {
+            return {
+                title: track.title,
+                artist: this.data.artist,
+                image: this.data.cover,
+                audio: track.music,
+                autoplay: true,
+                trackId: track.id,
+            };
+        });
         tracks.forEach((track, i) => {
-            const albumItem = new TrackItem();
-            albumItem.setAttribute('data', JSON.stringify({
+            const trackItem = new TrackItem();
+            trackItem.setAttribute('data', JSON.stringify({
                 ...track,
                 trackNumber: i + 1,
                 albumImage: this.data.cover,
                 artist: this.data.artist,
-            }))
-            albumTracks.appendChild(albumItem);
+                albumTracks: trackList
+            }));
+            albumTracks.appendChild(trackItem);
         });
 
         const goToAlbum = () => {

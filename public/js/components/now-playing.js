@@ -73,23 +73,31 @@ class NowPlaying extends HTMLElement {
         this.querySelector('.playing-song-info-artist').innerText = this.data.artist;
 
         if (this.data.audio !== null) {
-            this.audio = new Audio(this.data.audio);
+            if (this.audio !== null) {
+                this.audio.pause();
+                this.audio.src = this.data.audio;                
+            } else {
+                this.audio = new Audio(this.data.audio);
+            }
             if (this.data.autoplay) {
                 this.play();
             }
             this.audio.volume = this.volume / 100;
 
             this.audio.onloadedmetadata = () => {
-                const totalMinutes = this.querySelector('#total-minutes');
-                const totalSeconds = new Date(Math.ceil(this.audio.duration) * 1000).toISOString().substr(14, 5);
-                totalMinutes.innerText = totalSeconds;
+                try {
+                    const totalMinutes = this.querySelector('#total-minutes');
+                    const totalSeconds = new Date(Math.ceil(this.audio.duration) * 1000).toISOString().substr(14, 5);
+                    totalMinutes.innerText = totalSeconds;
+                } catch (e) {
+                }
             }
 
             const currentMinutes = this.querySelector('#current-minutes');
             currentMinutes.innerText = '00:00';
             const audioProgress = this.querySelector('#audio-progress');
             audioProgress.style.width = '0%';
-            
+
             this.audio.ontimeupdate = () => {
                 const audioProgressWidth = (this.audio.currentTime / this.audio.duration) * 100;
                 audioProgress.style.width = audioProgressWidth + '%';
@@ -99,15 +107,7 @@ class NowPlaying extends HTMLElement {
             };
 
             this.audio.onended = () => {
-                console.log('ended');
-                // TODO : play next song
-                const playEventDetail = {
-                    trackId: this.data.id,
-                };
-                const playEvent = new CustomEvent('track-pause', {
-                    detail: playEventDetail,
-                });
-                this.dispatchEvent(playEvent);
+                this.next();
             }
         }
     }
@@ -124,13 +124,23 @@ class NowPlaying extends HTMLElement {
         playButton.addEventListener('click', (e) => {
             this.play();
         });
-        
+
         const audioProgressContainer = this.querySelector('#audio-progress-container');
         audioProgressContainer.addEventListener('click', (e) => {
             const audioProgress = this.querySelector('#audio-progress');
             const audioProgressWidth = (e.offsetX / audioProgressContainer.offsetWidth) * 100;
             audioProgress.style.width = audioProgressWidth + '%';
             this.audio.currentTime = (audioProgressWidth / 100) * this.audio.duration;
+        });
+
+        const next = this.querySelector('#forward-button');
+        next.addEventListener('click', (e) => {
+            this.next();
+        });
+
+        const back = this.querySelector('#back-button');
+        back.addEventListener('click', (e) => {
+            this.previous();
         });
 
         this.data = JSON.parse(this.getAttribute('music-data')) || null;
@@ -182,34 +192,101 @@ class NowPlaying extends HTMLElement {
                 playAudioIcon.classList.remove('fa-play');
                 playAudioIcon.classList.add('fa-pause');
 
-                const playEventDetail = {
-                    trackId: this.data.trackId,
-                };
-                const playEvent = new CustomEvent('track-play', {
-                    detail: playEventDetail,
-                    bubbles: true,
-                    composed: true
-                });
-                this.dispatchEvent(playEvent);
+                this.emitPlayEvent();
 
             } else {
                 this.audio.pause();
                 playAudioIcon.classList.remove('fa-pause');
                 playAudioIcon.classList.add('fa-play');
 
-                const playEventDetail = {
-                    trackId: this.data.id,
-                };
-                const playEvent = new CustomEvent('track-pause', {
-                    detail: playEventDetail,
-                });
-                this.dispatchEvent(playEvent);
+                this.emitPauseEvent();
             }
         }
     }
 
+    emitPauseEvent() {
+        const playEventDetail = {
+            trackId: this.data.id,
+        };
+        const playEvent = new CustomEvent('track-pause', {
+            detail: playEventDetail,
+        });
+        this.dispatchEvent(playEvent);
+    }
+
+    emitPlayEvent() {
+        const playEventDetail = {
+            trackId: this.data.trackId,
+        };
+        const playEvent = new CustomEvent('track-play', {
+            detail: playEventDetail,
+            bubbles: true,
+            composed: true
+        });
+        this.dispatchEvent(playEvent);
+    }
+
+    next() {
+        if (this.audio !== null) {
+            this.audio.onended = null;
+            this.audio.onloadeddata = null;
+            this.audio.pause();
+        }
+        if (this.playIndex < this.playlist.length - 1) {
+            this.playIndex++;
+        } else {
+            this.playIndex = 0;
+            const playAudioIcon = this.querySelector('#play-button-icon');
+            playAudioIcon.classList.remove('fa-pause');
+            playAudioIcon.classList.add('fa-play');
+            this.emitPauseEvent();
+            this.data = {
+                ...this.playlist[this.playIndex],
+                autoplay: false,
+            };
+            this.update();
+            return;
+        }
+        const nextSong = this.playlist[this.playIndex];
+        this.data = nextSong;
+        this.update();
+
+        this.emitPlayEvent();
+    }
+
+    previous() {
+        if (this.audio !== null) {
+            this.audio.onended = null;
+            this.audio.onloadeddata = null;
+            this.audio.pause();
+            this.audio.remove();
+        }
+        if (this.playIndex > 0) {
+            this.playIndex--;
+        } else {
+            this.playIndex = this.playlist.length - 1;
+            const playAudioIcon = this.querySelector('#play-button-icon');
+            playAudioIcon.classList.remove('fa-pause');
+            playAudioIcon.classList.add('fa-play');
+            this.emitPauseEvent();
+            return;
+        }
+        const previousSong = this.playlist[this.playIndex];
+        this.data = previousSong;
+        this.update();
+        this.emitPlayEvent();
+    }
+
     get currentPlayingTrack() {
-        return this.data.trackId;
+        if (this.data !== null) {
+            return this.data.trackId;
+        }
+        return null;
+    }
+
+    setSongs(songs, playIndex) {
+        this.playlist = songs;
+        this.playIndex = playIndex;
     }
 }
 

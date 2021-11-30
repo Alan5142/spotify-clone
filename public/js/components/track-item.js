@@ -42,17 +42,15 @@ class TrackItem extends HTMLTableRowElement {
         }
 
         this.onclick = () => {
-            if (this.data.title === 'Levitating') {
-                nowPlaying.setAttribute('music-data', JSON.stringify({
-                    title: this.data.title,
-                    artist: this.data.artist,
-                    image: this.data.albumImage,
-                    audio: '/public/music/Levitating.mp3',
-                    autoplay: true,
-                    trackId: this.data.id,
-                }));
-            }
-
+            nowPlaying.setSongs(this.data.albumTracks, this.data.trackNumber - 1);
+            nowPlaying.setAttribute('music-data', JSON.stringify({
+                title: this.data.title,
+                artist: this.data.artist,
+                image: this.data.albumImage,
+                audio: this.data.music,
+                autoplay: true,
+                trackId: this.data.id,
+            }));
         };
 
         nowPlaying.addEventListener('track-play', e => this.onSongPlayed(e));
@@ -62,7 +60,16 @@ class TrackItem extends HTMLTableRowElement {
     render() {
         this.querySelector('.track-number').textContent = this.data.trackNumber;
         this.querySelector('.track-title').textContent = this.data.title;
+        /*const music = new Audio(this.data.music);
         this.querySelector('.track-duration').textContent = this.data.duration;
+        music.addEventListener('loadedmetadata', () => {
+            const totalSeconds = new Date(Math.ceil(music.duration) * 1000).toISOString().substr(14, 5);
+            this.querySelector('.track-duration').textContent = totalSeconds;
+            music.removeEventListener('loadedmetadata', () => {});
+            music.pause();
+            music.remove();
+        });*/
+
 
         const nowPlaying = document.querySelector('now-playing');
     }
