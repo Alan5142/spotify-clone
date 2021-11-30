@@ -18,8 +18,18 @@ const trackSchema = new mongoose.Schema({
     file: {
         type: String,
         required: true,
-    }
-});
+    },
+}, {
+    toObject: {
+        transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+            ret.music = `/public/music/${ret.file}`;
+            delete ret.file;
+        },
+    },
+},);
 
 trackSchema.methods.toJSON = function () {
     const track = this.toObject();

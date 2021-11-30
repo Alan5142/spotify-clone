@@ -8,6 +8,18 @@ const albumSchema = new mongoose.Schema({
     image: String,
     description: String,
     genres: [String],
+}, {
+    toObject: {
+        transform: function (doc, ret) {
+            ret.id = ret._id;
+            delete ret._id;
+            delete ret.__v;
+
+            ret.cover = `/public/covers/${ret.image}`;
+            delete ret.image;
+            return ret;
+        }
+    }
 });
 
 albumSchema.methods.toJSON = function () {

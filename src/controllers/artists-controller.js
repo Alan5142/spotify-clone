@@ -19,11 +19,18 @@ export async function createArtist(name, email, password, description, type) {
 }
 
 export async function getArtistById(id) {
-    return await Artist.findById(id);
+    return await Artist.findById(id, undefined, {
+        populate: {
+            path: 'albums',
+            populate: {
+                path: 'tracks',
+            },
+        },
+    });
 }
 
 export async function getArtistByName(name) {
-    const artist = await Artist.findOne({ name });
+    const artist = await Artist.findOne({ name }).populate('albums').populate('tracks');
     return artist;
 }
 
