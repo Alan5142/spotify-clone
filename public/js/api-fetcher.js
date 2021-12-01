@@ -69,3 +69,9 @@ export async function getArtistById(id) {
         method: "GET",
     });
 }
+
+export async function getAlbumById(artistId, albumId) {
+    return await fetchDosWithAuth(`/api/artist/${artistId}/album/${albumId}`, {
+        method: "GET",
+    });
+}

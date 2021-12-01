@@ -51,6 +51,7 @@ export async function getFile(fileId, bucketName) {
     fileId = new ObjectId(fileId);
     const bucket = new GridFSBucket(mongoose.connection.db, {
         bucketName,
+        chunkSizeBytes: 1024 * 1024,
     });
     const downloadStream = bucket.openDownloadStream(fileId);
 

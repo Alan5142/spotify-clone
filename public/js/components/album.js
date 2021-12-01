@@ -73,8 +73,9 @@ class Album extends HTMLElement {
             this.data = JSON.parse(this.getAttribute('data'));
         }
         this.render();
-    }
 
+    }
+    
     render() {
         if (this.data === null) return;
         this.querySelector('.album-title').innerText = this.data.title;
@@ -88,78 +89,52 @@ class Album extends HTMLElement {
             window.history.pushState({}, '', `/singstereo/artist/${artistId}`);
         });
         this.querySelector('.album-cover').src = this.data.cover;
-
+        
         const albumTracks = this.querySelector('.album-tracks-list-body');
         albumTracks.innerHTML = '';
-        const tracks = [
-            {
-                title: 'Future Nostalgia',
-                duration: '3:04',
-                id: '1',
-            },
-            {
-                title: 'Don\'t Start Now',
-                duration: '3:03',
-                id: '2',
-            },
-            {
-                title: 'Cool',
-                duration: '3:29',
-                id: '3',
-            },
-            {
-                title: 'Physical',
-                duration: '3:13',
-                id: '4',
-            },
-            {
-                title: 'Levitating',
-                duration: '3:32',
-                id: '5',
-            },
-            {
-                title: 'Pretty Please',
-                duration: '3:14',
-                id: '6',
-            },
-            {
-                title: 'Hallucinate',
-                duration: '3:28',
-                id: '7',
-            },
-            {
-                title: 'Love Again',
-                duration: '4:18',
-                id: '8',
-            },
-            {
-                title: 'Break My Heart',
-                duration: '3:41',
-                id: '9',
-            },
-            {
-                title: 'Good In Bed',
-                duration: '3:38',
-                id: '10',
-            },
-            {
-                title: 'Boys Will Be Boys',
-                duration: '2:46',
-                id: '11',
-            },
-        ];
-        tracks.forEach((e, i) => {
+        
+        const trackList = this.data.tracks.map((track, i) => {
+            return {
+                title: track.title,
+                artist: this.data.artist,
+                image: this.data.cover,
+                audio: track.music,
+                autoplay: true,
+                trackId: track.id,
+                trackNumber: i + 1,
+            };
+        });
+        
+        this.data.tracks.forEach((e, i) => {
             const albumItem = new TrackItem();
             albumItem.setAttribute('data', JSON.stringify({
                 ...e,
                 trackNumber: i + 1,
                 albumImage: this.data.cover,
                 artist: this.data.artist,
+                audio: this.data.music,
+                albumTracks: trackList,
             }))
             albumTracks.appendChild(albumItem);
         });
-    }
+        const playButton = this.querySelector('.play-button');
+        playButton.onclick = (e) => {
+            e.preventDefault();
+            const nowPlaying = document.querySelector('now-playing');
 
+            const firstSong = trackList[0];
+            nowPlaying.setSongs(trackList, 0);
+            nowPlaying.setAttribute('music-data', JSON.stringify({
+                title: firstSong.title,
+                artist: firstSong.artist,
+                image: firstSong.image,
+                audio: firstSong.audio,
+                autoplay: true,
+                trackId: firstSong.trackId,
+            }));
+        };
+    }
+    
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'data' && JSON.parse(newValue) !== this.data) {
             this.data = JSON.parse(newValue);

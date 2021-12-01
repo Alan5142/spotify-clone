@@ -60,15 +60,16 @@ class TrackItem extends HTMLTableRowElement {
     render() {
         this.querySelector('.track-number').textContent = this.data.trackNumber;
         this.querySelector('.track-title').textContent = this.data.title;
-        /*const music = new Audio(this.data.music);
-        this.querySelector('.track-duration').textContent = this.data.duration;
+        const music = new Audio(this.data.music);
+        music.preload = 'metadata';
+        this.querySelector('.track-duration').textContent = 'Loading...';
         music.addEventListener('loadedmetadata', () => {
             const totalSeconds = new Date(Math.ceil(music.duration) * 1000).toISOString().substr(14, 5);
             this.querySelector('.track-duration').textContent = totalSeconds;
             music.removeEventListener('loadedmetadata', () => {});
             music.pause();
             music.remove();
-        });*/
+        });
 
 
         const nowPlaying = document.querySelector('now-playing');

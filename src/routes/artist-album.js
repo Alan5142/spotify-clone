@@ -2,7 +2,7 @@ import { Router } from "express";
 import { requiresArtist, requiresAuth } from "../utils/auth.js";
 import expressValidator from 'express-validator';
 import multer from "multer";
-import { createAlbum } from "../controllers/artists-controller.js";
+import { createAlbum, getAlbumById } from "../controllers/artists-controller.js";
 
 const { body, validationResult, param, oneOf } = expressValidator;
 

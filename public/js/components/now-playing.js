@@ -78,6 +78,7 @@ class NowPlaying extends HTMLElement {
                 this.audio.src = this.data.audio;                
             } else {
                 this.audio = new Audio(this.data.audio);
+                this.audio.preload = 'auto';
             }
             if (this.data.autoplay) {
                 this.play();
@@ -108,7 +109,8 @@ class NowPlaying extends HTMLElement {
 
             this.audio.onended = () => {
                 this.next();
-            }
+            };
+            this.emitPlayEvent();
         }
     }
 

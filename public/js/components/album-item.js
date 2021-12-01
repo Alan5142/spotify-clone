@@ -11,7 +11,7 @@ template.innerHTML = `
                 <span class="fa fa-play"></span>
             </button>
         </div>
-        <div class="album-info ms-2 d-flex flex-column justify-content-center">
+        <div class="album-info w-100 ms-2 d-flex flex-column justify-content-center">
             <span>
                 <a class="album-name-link">
                     <h2 class="album-title mb-0 no-select"></h2>
@@ -87,6 +87,7 @@ class AlbumItem extends HTMLElement {
                 audio: track.music,
                 autoplay: true,
                 trackId: track.id,
+                trackNumber: i + 1,
             };
         });
         tracks.forEach((track, i) => {
@@ -102,14 +103,30 @@ class AlbumItem extends HTMLElement {
         });
 
         const goToAlbum = () => {
+            console.log(this.data.artistId);
+            console.log(this.data);
             window.history.pushState({}, '', `/singstereo/artist/${this.data.artistId}/album/${this.data.id}`);
         };
-
-        this.querySelector('.album-header').onclick = goToAlbum;
 
         this.querySelector('.album-name-link').onclick = (e) => {
             e.preventDefault();
             goToAlbum();
+        };
+
+        this.querySelector('.album-play-button').onclick = (e) => {
+            e.preventDefault();
+            const nowPlaying = document.querySelector('now-playing');
+
+            const firstSong = trackList[0];
+            nowPlaying.setSongs(trackList, 0);
+            nowPlaying.setAttribute('music-data', JSON.stringify({
+                title: firstSong.title,
+                artist: firstSong.artist,
+                image: firstSong.image,
+                audio: firstSong.audio,
+                autoplay: true,
+                trackId: firstSong.trackId,
+            }));
         };
     }
 }

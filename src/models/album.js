@@ -29,15 +29,8 @@ albumSchema.methods.toJSON = function () {
     delete album._id;
 
     album.image = `/public/covers/${album.image}`;
-    album.tracks = album.tracks.map((track) => {
-        return {
-            id: track._id,
-            title: track.title,
-            music: `/public/music/${track.file}`,
-            artist: track.artist,
-            album: track.album,
-        }
-    });
+    album.artistId = album.artist.id;
+    album.artist = album.artist.name;
     return album;
 };
 

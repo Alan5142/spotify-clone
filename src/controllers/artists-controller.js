@@ -90,7 +90,11 @@ export async function createAlbum({artistId, name, releaseDate, trackNames, trac
 }
 
 export async function getAlbumById(id){
-    return await Album.findById(id);
+    return await Album.findById(id, undefined, {
+        populate: {
+            path: 'tracks artist',
+        },
+    });
 }
 
 export async function modifyAlbum(albumId, name, releaseDate, tracks, description, genres) {
