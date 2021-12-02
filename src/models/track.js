@@ -31,6 +31,8 @@ const trackSchema = new mongoose.Schema({
     },
 },);
 
+trackSchema.index({ title: "text", artist: "text" });
+
 trackSchema.methods.toJSON = function () {
     const track = this.toObject();
     delete track.__v;

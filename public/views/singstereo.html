@@ -32,7 +32,7 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <form class="me-auto ms-auto">
                         <div class="input-group">
-                            <input class="form-control border-end-0 border" type="search" value="search"
+                            <input class="form-control border-end-0 border" type="search" placeholder="search"
                                 id="example-search-input">
                             <span class="input-group-append">
                                 <button
@@ -44,12 +44,17 @@
                         </div>
                     </form>
 
-                    <button id="my-account-btn" class="btn btn-outline-primary" type="button">
-                        My account
-                    </button>
-                    <button id="log-out" class="btn btn-outline-danger ms-1" type="button">
-                        Log out
-                    </button>
+                    <div class="d-flex">
+                        
+                        <button id="my-account-btn" class="btn btn-outline-primary" type="button">
+                            <i class="fa fa-user"></i>
+                            My account
+                        </button>
+                        <button id="logout-btn" class="btn btn-outline-danger ms-1" type="button">
+                            <i class="fa fa-sign-out-alt"></i>
+                            Sign out
+                        </button>
+                    </div>
                 </div>
             </div>
         </nav>

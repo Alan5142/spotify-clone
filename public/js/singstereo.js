@@ -1,7 +1,9 @@
 import ArtistPage from './components/artist-page.js';
 import Album from './components/album.js';
 import MyAccount from './components/my-account.js';
-import { getArtistById, getAlbumById, getMyInfo } from './api-fetcher.js';
+import AddAlbum from './components/add-album.js';
+import { getArtistById, getAlbumById, getMyInfo, getMyArtistInfo } from './api-fetcher.js';
+import { getUserType } from './auth-utils.js';
 
 if (localStorage.getItem('token') === null) {
     window.location.href = '/login';
@@ -37,7 +39,7 @@ async function onUrlChange(url) {
     if (splitUrl.length === 4 && splitUrl[2] === 'artist') {
         const artistId = splitUrl[3];
         const artist = await getArtistById(artistId);
-        
+
         artist.albums.forEach(album => {
             album.artist = artist.name;
             album.artistId = artist.id;
@@ -57,9 +59,26 @@ async function onUrlChange(url) {
         main.innerHTML = '';
         main.appendChild(albumPage);
     } else if (splitUrl.length === 3 && splitUrl[2] === 'my-account') {
-        const {name, email} = await getMyInfo();
-        const myAccount = new MyAccount({name, email});
-        main.appendChild(myAccount);
+        const userType = getUserType();
+        if (userType === 'user') {
+            const { name, email } = await getMyInfo();
+            const myAccount = new MyAccount({ name, email, type: 'user' });
+            main.appendChild(myAccount);
+        } else {
+            const { name, email, description, artistType } = await getMyArtistInfo();
+            const myArtistAccount = new MyAccount({
+                name,
+                email,
+                type: 'artist',
+                artistDescription: description,
+                artistType,
+            });
+            main.appendChild(myArtistAccount);
+        }
+    } else if (splitUrl.length === 3 && splitUrl[2] === 'new-album') {
+        const addAlbum = new AddAlbum();
+        main.innerHTML = '';
+        main.appendChild(addAlbum);
     }
     main.scrollTo(0, 0);
 }

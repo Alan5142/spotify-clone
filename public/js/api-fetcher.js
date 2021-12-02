@@ -89,8 +89,13 @@ export async function getMyInfo() {
     });
 }
 
+export async function getMyArtistInfo() {
+    return await fetchDosWithAuth('/api/artist', {
+        method: "GET",
+    });
+}
+
 export async function editUser({name, password}) {
-    console.log(name, password);
     return await fetchDosWithAuth('/api/user', {
         method: "PUT",
         body: {
@@ -99,3 +104,50 @@ export async function editUser({name, password}) {
         }
     });
 }
+
+export async function editArtist({name, description, password, artistType}) {
+    return await fetchDosWithAuth('/api/artist', {
+        method: "PUT",
+        body: {
+            name,
+            description,
+            password,
+            artistType,
+        }
+    });
+}
+
+export function createAlbum({name, releaseDate, artistId, genres, cover, tracks, trackList}, progressCallback) {
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('releaseDate', releaseDate);
+    formData.append('cover', cover);
+    formData.append('tracks', tracks);
+
+    for (const track of trackList) {
+        formData.append('trackFiles', track);
+    }
+    
+    genres.forEach(genre => {
+        formData.append('genres', genre);
+    });
+
+    const request = new XMLHttpRequest();
+    request.open('POST', `/api/artist/${artistId}/album`);
+    request.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    request.upload.onprogress = progressCallback;
+    request.send(formData);
+    request.onreadystatechange = function() {
+        if (request.readyState === 4) {
+            if (!isOk(request.status)) {
+                throw new ApiError(JSON.parse(request.responseText));
+            }
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        request.onload = resolve;
+        request.onerror = reject;
+    });
+}
+
