@@ -9,8 +9,8 @@
     <link crossorigin="anonymous" href="/public/css/bootstrap.min.css" rel="stylesheet">
     <link crossorigin="anonymous" href="/public/css/common.css" rel="stylesheet">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    
+        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
@@ -32,17 +32,24 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <form class="me-auto ms-auto">
                         <div class="input-group">
-                            <input class="form-control border-end-0 border" type="search" value="search" id="example-search-input">
+                            <input class="form-control border-end-0 border" type="search" value="search"
+                                id="example-search-input">
                             <span class="input-group-append">
-                                <button class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5" type="button">
+                                <button
+                                    class="btn btn-outline-secondary bg-white border-start-0 border-bottom-0 border ms-n5"
+                                    type="button">
                                     <i class="fa fa-search"></i>
                                 </button>
                             </span>
                         </div>
                     </form>
 
-                    <button class="btn btn-outline-primary " type="button" onclick="window.location.href='/login'">My
-                        account</button>
+                    <button id="my-account-btn" class="btn btn-outline-primary" type="button">
+                        My account
+                    </button>
+                    <button id="log-out" class="btn btn-outline-danger ms-1" type="button">
+                        Log out
+                    </button>
                 </div>
             </div>
         </nav>
@@ -50,7 +57,7 @@
 
     <!-- main -->
     <main class="flex-grow-1 main-content">
-        
+
     </main>
 
     <!-- footer -->

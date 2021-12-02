@@ -19,3 +19,7 @@ export async function login(e){
         }
     }
 }
+
+if (localStorage.getItem("token") !== null) {
+    window.location.href = "/singstereo";
+}

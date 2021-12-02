@@ -6,6 +6,17 @@ import { encryptPassword } from "../utils/encrypt.js";
 import Album from '../models/album.js';
 
 export async function createArtist(name, email, password, description, type) {
+    // check if user already exists
+    const currentUser = await User.findOne({ email });
+    if (currentUser) {
+        return null;
+    }
+    // check if artist with same email already exists
+    const artist = await Artist.findOne({ email: email });
+    if (artist) {
+        return null;
+    }
+    
     const hashedPassword = await encryptPassword(password);
     const user = new Artist({
         name,

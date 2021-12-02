@@ -1,6 +1,7 @@
 import ArtistPage from './components/artist-page.js';
 import Album from './components/album.js';
-import { getArtistById, getAlbumById } from './api-fetcher.js';
+import MyAccount from './components/my-account.js';
+import { getArtistById, getAlbumById, getMyInfo } from './api-fetcher.js';
 
 if (localStorage.getItem('token') === null) {
     window.location.href = '/login';
@@ -55,9 +56,26 @@ async function onUrlChange(url) {
         albumPage.setAttribute('data', JSON.stringify(album));
         main.innerHTML = '';
         main.appendChild(albumPage);
+    } else if (splitUrl.length === 3 && splitUrl[2] === 'my-account') {
+        const {name, email} = await getMyInfo();
+        const myAccount = new MyAccount({name, email});
+        main.appendChild(myAccount);
     }
     main.scrollTo(0, 0);
 }
 
 
 onUrlChange(window.location.pathname);
+
+const myAccount = document.getElementById('my-account-btn');
+
+myAccount.addEventListener('click', () => {
+    history.pushState(null, null, '/singstereo/my-account');
+});
+
+const logout = document.getElementById('logout-btn');
+
+logout.addEventListener('click', () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login';
+});

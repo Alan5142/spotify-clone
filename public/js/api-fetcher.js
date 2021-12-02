@@ -3,6 +3,13 @@ function isOk(status) {
     return status >= 200 && status < 300;
 }
 
+class ApiError extends Error {
+    constructor(object) {
+        super(JSON.stringify(object));
+        this.errors = object.errors || [object.error];
+    }
+}
+
 /**
     Fetch era tan bueno hasta que llego fetch 2
 
@@ -21,7 +28,7 @@ async function fetchDOS(url, params) {
     });
     const jsonResponse = await res.json();
     if (!isOk(res.status)) {
-        throw new Error(JSON.stringify(jsonResponse));
+        throw new ApiError(jsonResponse);
     }
     return jsonResponse;
 }
@@ -73,5 +80,22 @@ export async function getArtistById(id) {
 export async function getAlbumById(artistId, albumId) {
     return await fetchDosWithAuth(`/api/artist/${artistId}/album/${albumId}`, {
         method: "GET",
+    });
+}
+
+export async function getMyInfo() {
+    return await fetchDosWithAuth('/api/user', {
+        method: "GET",
+    });
+}
+
+export async function editUser({name, password}) {
+    console.log(name, password);
+    return await fetchDosWithAuth('/api/user', {
+        method: "PUT",
+        body: {
+            name,
+            password,
+        }
     });
 }
