@@ -73,7 +73,8 @@ export async function createAlbum({artistId, name, releaseDate, trackNames, trac
         releaseDate,
         artist: artist._id,
         description,
-        genres
+        genres,
+        artistName: artist.name,
     });
     const uploadedImage = await uploadCover(image, album.title, album._id);
     album.image = uploadedImage;
@@ -91,6 +92,7 @@ export async function createAlbum({artistId, name, releaseDate, trackNames, trac
             album: album._id,
             artist: artist._id,
             duration: duration,
+            artistName: artist.name,
         });
         tracksObject.push(track);
     }

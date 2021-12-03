@@ -10,14 +10,23 @@ export async function search(searchString) {
         .limit(30);
     const tracks = await Track.find(
         {$text: {$search: searchString}},
-        {score: {$meta: "textScore"}})
+        {score: {$meta: "textScore"}}, {
+            populate: {
+                path: 'album',
+                select: 'name image',
+            },
+        })
         .limit(30);
     const albums = await Album.find(
         {$text: {$search: searchString}},
-        {score: {$meta: "textScore"}})
+        {score: {$meta: "textScore"}}, {
+            populate: {
+                path: 'artist',
+                select: 'name image id',
+            },
+        })
         .limit(30);
 
     const objects = [...artist, ...tracks, ...albums].sort((a, b) => a.score - b.score);
-    console.log(objects);
     return objects;
 }

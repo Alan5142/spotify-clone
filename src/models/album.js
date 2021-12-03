@@ -8,6 +8,7 @@ const albumSchema = new mongoose.Schema({
     image: String,
     description: String,
     genres: [String],
+    artistName: String,
 }, {
     toObject: {
         transform: function (doc, ret) {
@@ -22,13 +23,10 @@ const albumSchema = new mongoose.Schema({
     }
 });
 
-albumSchema.index({ title: 'text', genres: 'text' });
+albumSchema.index({ title: 'text', genres: 'text', 'genres.*': 'text', artistName: 'text' });
 
 albumSchema.methods.toJSON = function () {
     const album = this.toObject();
-    delete album.__v;
-    album.id = album._id;
-    delete album._id;
 
     album.image = `/public/covers/${album.image}`;
     album.artistId = album.artist.id;

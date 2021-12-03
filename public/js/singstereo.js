@@ -2,7 +2,8 @@ import ArtistPage from './components/artist-page.js';
 import Album from './components/album.js';
 import MyAccount from './components/my-account.js';
 import AddAlbum from './components/add-album.js';
-import { getArtistById, getAlbumById, getMyInfo, getMyArtistInfo } from './api-fetcher.js';
+import Search from './components/search.js';
+import { getArtistById, getAlbumById, getMyInfo, getMyArtistInfo, searchRequest } from './api-fetcher.js';
 import { getUserType } from './auth-utils.js';
 
 if (localStorage.getItem('token') === null) {
@@ -80,13 +81,18 @@ async function onUrlChange(url) {
         const addAlbum = new AddAlbum();
         main.innerHTML = '';
         main.appendChild(addAlbum);
+    } else if (splitUrl.length === 3 && splitUrl[2].match(/search\?search=.+/)) {
+        main.innerHTML = '';
+        const query = new URLSearchParams(window.location.search).get('search');
+        const searchResults = await searchRequest(query);
+        const searchPage = new Search({ query, searchResults: searchResults.search });
+        main.appendChild(searchPage);
     }
+    console.log(url);
     main.scrollTo(0, 0);
 }
 
-
-onUrlChange(window.location.pathname);
-
+onUrlChange(window.location.pathname + window.location.search);
 const myAccount = document.getElementById('my-account-btn');
 
 myAccount.addEventListener('click', () => {

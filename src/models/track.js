@@ -23,6 +23,10 @@ const trackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    artistName: {
+        type: String,
+        required: true,
+    }
 }, {
     toObject: {
         transform: function (doc, ret) {
@@ -35,16 +39,10 @@ const trackSchema = new mongoose.Schema({
     },
 },);
 
-trackSchema.index({ title: "text" });
+trackSchema.index({ title: "text", artistName: "text" });
 
 trackSchema.methods.toJSON = function () {
     const track = this.toObject();
-    delete track.__v;
-    track.id = track._id;
-    delete track._id;
-    
-    track.music = `/public/music/${album.music}`;
-    delete track.file;
     return track;
 };
 
