@@ -1,8 +1,11 @@
 import { Router } from "express";
-import { createArtist, getArtistById, modifyArtist } from "../controllers/artists-controller.js";
+import { createArtist, getArtistById, modifyArtist, updateProfilePicture, updateCoverPicture } from "../controllers/artists-controller.js";
 import { requiresAuth, requiresArtist } from "../utils/auth.js";
 import albumRoutes from "./artist-album.js";
 import expressValidator from 'express-validator';
+import multer from "multer";
+import { uploadCover } from "../data/files.js";
+
 
 const { body, validationResult, param, oneOf } = expressValidator;
 
@@ -91,6 +94,38 @@ router.put('/',
             res.status(400).json({ errors: [{ msg: e.message }] });
         }
     });
+
+const upload = multer({ storage: multer.memoryStorage() });
+router.post('/profile',
+    requiresAuth,
+    requiresArtist,
+    upload.single('profile'),
+    async (req, res) => {
+        try {
+            const artist = await updateProfilePicture(req.user.id, req.file);
+            res.status(200).json(artist);
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ error: e.message });
+        }
+    }
+);
+
+router.post('/cover',
+    requiresAuth,
+    requiresArtist,
+    upload.single('cover'),
+    async (req, res) => {
+        try {
+            const artist = await updateCoverPicture(req.user.id, req.file);
+            res.status(200).json(artist);
+        } catch (e) {
+            console.error(e);
+            res.status(500).json({ error: e.message });
+        }
+    }
+);
+
 
 router.use('/:id/album', albumRoutes);
 

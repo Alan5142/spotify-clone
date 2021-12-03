@@ -84,12 +84,12 @@ function createListElement(object) {
 
     switch (type) {
         case 'artist':
-            image.src = object.image || 'https://images.squarespace-cdn.com/content/v1/52d6a652e4b07924afb11fc3/1516126900073-UJW8F6I2X2KCJ6TG9GL5/MBD+Promo+Splice+2.jpg?format=1500w';
+            image.src = object.profile || '/public/images/cover-alt.png';
             title.innerText = object.name;
             author.innerText = '';
             itemType.innerText = 'Artist';
             element.onclick = function () {
-                window.history.pushState({}, '', `/singstero/artist/${object.id}`);
+                window.history.pushState({}, '', `/singstereo/artist/${object.id}`);
             };
             break;
         case 'album':
@@ -99,8 +99,7 @@ function createListElement(object) {
             itemType.innerText = 'Album';
 
             element.onclick = function () {
-                console.log(object.artistId);
-                window.history.pushState({}, '', `/singstero/artist/${object.artistId}/album/${object.id}`);
+                window.history.pushState({}, '', `/singstereo/artist/${object.artistId}/album/${object.id}`);
             };
             break;
         case 'track':
@@ -111,7 +110,6 @@ function createListElement(object) {
 
             element.onclick = function () {
                 nowPlaying.setSongs([], 0);
-                console.log(object);
                 nowPlaying.setAttribute('music-data', JSON.stringify({
                     title: object.title,
                     artist: object.artistName,
@@ -144,7 +142,6 @@ class Search extends HTMLElement {
         results.innerHTML = `Search results for: ${this.query}`;
 
         const list = document.querySelector('#search-results-list');
-        console.log(this.searchResults);
 
         this.searchResults.forEach(element => {
             list.appendChild(createListElement(element));

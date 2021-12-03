@@ -10,6 +10,11 @@ if (localStorage.getItem('token') === null) {
     window.location.href = '/login';
 }
 
+const pageName = document.getElementById('page-name');
+pageName.onclick = () => {
+    window.history.pushState({}, '', '/singstereo');
+};
+
 const pushState = window.history.pushState;
 const main = document.querySelector('main');
 
@@ -67,13 +72,15 @@ async function onUrlChange(url) {
             const myAccount = new MyAccount({ name, email, type: 'user' });
             main.appendChild(myAccount);
         } else {
-            const { name, email, description, artistType } = await getMyArtistInfo();
+            const { name, email, description, artistType, cover, profile } = await getMyArtistInfo();
             const myArtistAccount = new MyAccount({
                 name,
                 email,
                 type: 'artist',
                 artistDescription: description,
                 artistType,
+                artistPicture: profile,
+                artistCover: cover,
             });
             main.appendChild(myArtistAccount);
         }
@@ -87,6 +94,23 @@ async function onUrlChange(url) {
         const searchResults = await searchRequest(query);
         const searchPage = new Search({ query, searchResults: searchResults.search });
         main.appendChild(searchPage);
+    } else if (splitUrl.length === 2) {
+        main.innerHTML = `
+<div class="container w-100">
+        <h1>SingStereo</h1>
+        
+        <p>SingStereo is a platform for artists to share their music and connect with other artists.
+        </p>
+
+        <p>
+        Start searching for an artist or album to get started.
+        </p>
+
+        <p>Enjoy your music with SingStereo!</p>
+
+        <h1 style="font-size: 8rem; text-align: center">:)</h1>
+</div>
+`;
     }
     console.log(url);
     main.scrollTo(0, 0);

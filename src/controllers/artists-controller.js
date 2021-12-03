@@ -62,6 +62,28 @@ export async function modifyArtist(id, name, password, description, type) {
     return artist;
 }
 
+export async function updateProfilePicture(id, file) {
+    const artist = await Artist.findById(id);
+    if (!artist) {
+        throw new Error(`Artist not found: ${id}`);
+    }
+    const profilePicture = await uploadCover(file);
+    artist.profile = profilePicture;
+    await artist.save();
+    return artist;
+}
+
+export async function updateCoverPicture(id, file) {
+    const artist = await Artist.findById(id);
+    if (!artist) {
+        throw new Error(`Artist not found: ${id}`);
+    }
+    const cover = await uploadCover(file);
+    artist.cover = cover;
+    await artist.save();
+    return artist;
+}
+
 export async function createAlbum({artistId, name, releaseDate, trackNames, tracks, image, description, genres, durations}) {
     const artist = await Artist.findById(artistId);
     if (!artist) {

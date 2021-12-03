@@ -13,7 +13,6 @@ router.post('/',
     body('email', 'Email not Valid').normalizeEmail().isEmail(),
     body('password', 'Password of minimum 6 characters long').isLength({ min: 6 }),
     async (req, res) => {
-        console.log(req.body);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -51,7 +50,6 @@ router.put('/',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        console.log(req.body);
         try {
             const user = await modifyUser(req.user.id, req.body.name, req.body.password);
             res.status(200).send({ user });
