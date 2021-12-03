@@ -22,6 +22,8 @@ const albumSchema = new mongoose.Schema({
     }
 });
 
+albumSchema.index({ title: 'text', description: 'text' });
+
 albumSchema.methods.toJSON = function () {
     const album = this.toObject();
     delete album.__v;
