@@ -5,7 +5,7 @@ const template = document.createElement('template');
 template.innerHTML = `
 <div class="album ps-4 pt-4 pe-4">
     <div class="album-header row">
-        <div class="col-sm-12 col-md-3 d-flex justify-content-center">
+        <div class="col-sm-12 col-md-4 d-flex justify-content-center">
             <img class="album-cover no-select" src="">
         </div>
 

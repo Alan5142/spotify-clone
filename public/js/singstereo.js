@@ -2,12 +2,18 @@ import ArtistPage from './components/artist-page.js';
 import Album from './components/album.js';
 import MyAccount from './components/my-account.js';
 import AddAlbum from './components/add-album.js';
-import { getArtistById, getAlbumById, getMyInfo, getMyArtistInfo } from './api-fetcher.js';
+import Search from './components/search.js';
+import { getArtistById, getAlbumById, getMyInfo, getMyArtistInfo, searchRequest } from './api-fetcher.js';
 import { getUserType } from './auth-utils.js';
 
 if (localStorage.getItem('token') === null) {
     window.location.href = '/login';
 }
+
+const pageName = document.getElementById('page-name');
+pageName.onclick = () => {
+    window.history.pushState({}, '', '/singstereo');
+};
 
 const pushState = window.history.pushState;
 const main = document.querySelector('main');
@@ -60,18 +66,21 @@ async function onUrlChange(url) {
         main.appendChild(albumPage);
     } else if (splitUrl.length === 3 && splitUrl[2] === 'my-account') {
         const userType = getUserType();
+        main.innerHTML = '';
         if (userType === 'user') {
             const { name, email } = await getMyInfo();
             const myAccount = new MyAccount({ name, email, type: 'user' });
             main.appendChild(myAccount);
         } else {
-            const { name, email, description, artistType } = await getMyArtistInfo();
+            const { name, email, description, artistType, cover, profile } = await getMyArtistInfo();
             const myArtistAccount = new MyAccount({
                 name,
                 email,
                 type: 'artist',
                 artistDescription: description,
                 artistType,
+                artistPicture: profile,
+                artistCover: cover,
             });
             main.appendChild(myArtistAccount);
         }
@@ -79,13 +88,35 @@ async function onUrlChange(url) {
         const addAlbum = new AddAlbum();
         main.innerHTML = '';
         main.appendChild(addAlbum);
+    } else if (splitUrl.length === 3 && splitUrl[2].match(/search\?search=.+/)) {
+        main.innerHTML = '';
+        const query = new URLSearchParams(window.location.search).get('search');
+        const searchResults = await searchRequest(query);
+        const searchPage = new Search({ query, searchResults: searchResults.search });
+        main.appendChild(searchPage);
+    } else if (splitUrl.length === 2) {
+        main.innerHTML = `
+<div class="container w-100">
+        <h1>SingStereo</h1>
+        
+        <p>SingStereo is a platform for artists to share their music and connect with other artists.
+        </p>
+
+        <p>
+        Start searching for an artist or album to get started.
+        </p>
+
+        <p>Enjoy your music with SingStereo!</p>
+
+        <h1 style="font-size: 8rem; text-align: center">:)</h1>
+</div>
+`;
     }
+    console.log(url);
     main.scrollTo(0, 0);
 }
 
-
-onUrlChange(window.location.pathname);
-
+onUrlChange(window.location.pathname + window.location.search);
 const myAccount = document.getElementById('my-account-btn');
 
 myAccount.addEventListener('click', () => {

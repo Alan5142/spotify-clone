@@ -229,6 +229,11 @@ class NowPlaying extends HTMLElement {
     }
 
     next() {
+        if (this.playlist.length === 0) {
+            this.data = null;
+            this.update();
+            return;
+        }
         if (this.audio !== null) {
             this.audio.onended = null;
             this.audio.onloadeddata = null;

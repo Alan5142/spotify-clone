@@ -50,7 +50,7 @@ class ArtistPage extends HTMLElement {
         const artistPageHeaderImage = this.querySelector('.artist-page-header');
         const artistPageHeaderInfoNameTextName = this.querySelector('.artist-page-header-info-name-text');
 
-        artistPageHeaderImage.style.backgroundImage = `url(${this.data.image})`;
+        artistPageHeaderImage.style.backgroundImage = `url(${this.data.cover})`;
         artistPageHeaderInfoNameTextName.innerText = this.data.name;
 
         const albumListElement = this.querySelector('.artist-page-content-albums-list');

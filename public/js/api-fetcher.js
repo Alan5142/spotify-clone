@@ -16,15 +16,15 @@ class ApiError extends Error {
     @param {RequestInit} params
 */
 async function fetchDOS(url, params) {
-    const res = await fetch(url, 
-    {
-        ...params,
-        body: JSON.stringify(params.body),
-        headers: {
-            ...params.headers,
-            'Content-Type': 'application/json',
-        }
-    });
+    const res = await fetch(url,
+        {
+            ...params,
+            body: JSON.stringify(params.body),
+            headers: {
+                ...params.headers,
+                'Content-Type': 'application/json',
+            }
+        });
     const jsonResponse = await res.json();
     if (!isOk(res.status)) {
         throw new ApiError(jsonResponse);
@@ -47,40 +47,40 @@ async function fetchDosWithAuth(url, params) {
     });
 }
 
-export async function requestLogin({email, password}) {
-    return await fetchDOS('/api/login', 
-    {
-        method: "POST",
-        body: {
-            email,
-            password
-        }
-    });
+export async function requestLogin({ email, password }) {
+    return await fetchDOS('/api/login',
+        {
+            method: "POST",
+            body: {
+                email,
+                password
+            }
+        });
 }
 
-export async function requestSignUp({name, email, password}) {
-    return await fetchDOS('/api/user', 
-    {
-        method: "POST",
-        body: {
-            name: name,
-            email: email,
-            password: password
-        }
-    });
+export async function requestSignUp({ name, email, password }) {
+    return await fetchDOS('/api/user',
+        {
+            method: "POST",
+            body: {
+                name: name,
+                email: email,
+                password: password
+            }
+        });
 }
 
-export async function requestArtistSignUp({name, email, password, typeOf}) {
-    return await fetchDOS('/api/artist', 
-    {
-        method: "POST",
-        body: {
-            name: name,
-            email: email,
-            password: password,
-            typeOf: typeOf
-        }
-    });
+export async function requestArtistSignUp({ name, email, password, typeOf }) {
+    return await fetchDOS('/api/artist',
+        {
+            method: "POST",
+            body: {
+                name: name,
+                email: email,
+                password: password,
+                typeOf: typeOf
+            }
+        });
 }
 
 export async function getArtistById(id) {
@@ -107,7 +107,7 @@ export async function getMyArtistInfo() {
     });
 }
 
-export async function editUser({name, password}) {
+export async function editUser({ name, password }) {
     return await fetchDosWithAuth('/api/user', {
         method: "PUT",
         body: {
@@ -117,7 +117,7 @@ export async function editUser({name, password}) {
     });
 }
 
-export async function editArtist({name, description, password, artistType}) {
+export async function editArtist({ name, description, password, artistType }) {
     return await fetchDosWithAuth('/api/artist', {
         method: "PUT",
         body: {
@@ -129,17 +129,21 @@ export async function editArtist({name, description, password, artistType}) {
     });
 }
 
-export function createAlbum({name, releaseDate, artistId, genres, cover, durations, tracks, trackList}, progressCallback) {
+export function createAlbum({ name, releaseDate, artistId, genres, cover, durations, tracks, trackList }, progressCallback) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('releaseDate', releaseDate);
     formData.append('cover', cover);
-    formData.append('tracks', tracks);
+    // formData.append('tracks', tracks);
+
+    tracks.forEach((name) => {
+        formData.append(`tracks`, name);
+    });
 
     for (const track of trackList) {
         formData.append('trackFiles', track);
     }
-    
+
     genres.forEach(genre => {
         formData.append('genres', genre);
     });
@@ -153,7 +157,7 @@ export function createAlbum({name, releaseDate, artistId, genres, cover, duratio
     request.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
     request.upload.onprogress = progressCallback;
     request.send(formData);
-    request.onreadystatechange = function() {
+    request.onreadystatechange = function () {
         if (request.readyState === 4) {
             if (!isOk(request.status)) {
                 throw new ApiError(JSON.parse(request.responseText));
@@ -167,8 +171,52 @@ export function createAlbum({name, releaseDate, artistId, genres, cover, duratio
     });
 }
 
-export async function searchRequest(search){
-    return await fetchDosWithAuth('/api/search?search="'+search+'"', {
+export async function searchRequest(search) {
+    return await fetchDosWithAuth('/api/search?search="' + search + '"', {
         method: "GET"
+    });
+}
+
+export async function uploadArtistPicture(newPicure) {
+    const formData = new FormData();
+    formData.append('profile', newPicure);
+
+    const request = new XMLHttpRequest();
+    request.open('POST', '/api/artist/profile');
+    request.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    request.send(formData);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (!isOk(request.status)) {
+                throw new ApiError(JSON.parse(request.responseText));
+            }
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        request.onload = resolve;
+        request.onerror = reject;
+    });
+}
+
+export async function uploadArtistCover(newPicure) {
+    const formData = new FormData();
+    formData.append('cover', newPicure);
+
+    const request = new XMLHttpRequest();
+    request.open('POST', '/api/artist/cover');
+    request.setRequestHeader('Authorization', `Bearer ${localStorage.getItem('token')}`);
+    request.send(formData);
+    request.onreadystatechange = function () {
+        if (request.readyState === 4) {
+            if (!isOk(request.status)) {
+                throw new ApiError(JSON.parse(request.responseText));
+            }
+        }
+    }
+
+    return new Promise((resolve, reject) => {
+        request.onload = resolve;
+        request.onerror = reject;
     });
 }

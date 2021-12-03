@@ -1,4 +1,4 @@
-import { editArtist, editUser } from "../api-fetcher.js";
+import { editArtist, editUser, uploadArtistCover, uploadArtistPicture } from "../api-fetcher.js";
 
 const template = document.createElement('template');
 
@@ -28,6 +28,23 @@ template.innerHTML = `
     <div class="w-100 d-flex justify-content-center">
         <form id="change-account" class="d-flex flex-column my-account-container">
             <h1 id="my-account-header">My Account</h1>
+            <div id="artist-pictures" class="d-none">
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-column justify-content-center align-content-center w-100">
+                        <h4>Artist Picture</h4>
+                        <a id="artist-picture-clickable" class="d-block">
+                            <img width="128" height="128" id="artist-picture" src="">
+                        </a>
+                        <input type="file" id="artist-picture-input" accept="image/*" hidden>
+
+                        <h4>Artist Cover (used for artist page)</h4>
+                        <a id="artist-cover-clickable" class="d-block">
+                            <img width="100%" height="128" id="artist-cover" src="">
+                        </a>
+                        <input type="file" id="artist-cover-input" accept="image/*" hidden>
+                    </div>
+                </div>
+            </div>
             <label for="name">Name</label>
             <input type="text" id="name" minlength="1">
             <label for="email">Email: </label>
@@ -65,7 +82,7 @@ template.innerHTML = `
 `;
 
 class MyAccount extends HTMLElement {
-    constructor({ name, email, type, artistDescription, artistType }) {
+    constructor({ name, email, type, artistDescription, artistType, artistPicture, artistCover }) {
         super();
         this.appendChild(template.content.cloneNode(true));
         this.name = name;
@@ -73,6 +90,8 @@ class MyAccount extends HTMLElement {
         this.type = type;
         this.artistDescription = artistDescription;
         this.artistType = artistType;
+        this.artistPicture = artistPicture || '/public/images/cover-alt.png';
+        this.artistCover = artistCover || '/public/images/cover-2-alt.png';
     }
 
     connectedCallback() {
@@ -107,6 +126,47 @@ class MyAccount extends HTMLElement {
         this.querySelector('#add-album-button').addEventListener('click', (e) => {
            window.history.pushState({}, '', '/singstereo/new-album'); 
         });
+
+
+        this.querySelector('#artist-picture-clickable').addEventListener('click', (e) => {
+            this.querySelector('#artist-picture-input').click();
+        });
+
+        this.querySelector('#artist-cover-clickable').addEventListener('click', (e) => {
+            this.querySelector('#artist-cover-input').click();
+        });
+
+        this.querySelector('#artist-picture-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                this.querySelector('#artist-picture').src = e.target.result;
+                
+                try {
+                    await uploadArtistPicture(file);
+                } catch (e) {
+                    alert('Cannot upload picture');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        this.querySelector('#artist-cover-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                this.querySelector('#artist-cover').src = e.target.result;
+
+                try {
+                    await uploadArtistCover(file);
+                } catch (e) {
+                    alert('Cannot upload picture');
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+
         this.render();
     }
 
@@ -122,7 +182,6 @@ class MyAccount extends HTMLElement {
             await editUser({ name, password: newPassword });
             alert('Changes saved');
         } catch (e) {
-            console.log(e.errors);
             alert('Cannot update user, error(s): ' + JSON.stringify(e.errors));
         }
     }
@@ -139,7 +198,6 @@ class MyAccount extends HTMLElement {
             await editArtist({ name, description, artistType, password: newPassword });
             alert('Changes saved');
         } catch (e) {
-            console.log(e.errors);
             alert('Cannot update user, error(s): ' + JSON.stringify(e.errors));
         }
     }
@@ -153,6 +211,9 @@ class MyAccount extends HTMLElement {
             this.querySelector('#artist-description').value = this.artistDescription;
             this.querySelector('#artist-type').value = this.artistType;
             this.querySelector('#add-album-button').style.display = '';
+            this.querySelector('#artist-pictures').classList.remove('d-none');
+            this.querySelector('#artist-picture').src = this.artistPicture;
+            this.querySelector('#artist-cover').src = this.artistCover;
         }
     }
 

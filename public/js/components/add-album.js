@@ -330,11 +330,12 @@ class AddAlbum extends HTMLElement {
       }, (event) => {
         if (event.lengthComputable) {
           const percent = Math.round((event.loaded / event.total) * 100);
-          console.log(percent);
           progressBar.style.width = `${percent}%`;
           progressBar.innerHTML = `${percent}%`;
         }
-      })
+      });
+
+      alert('Album created successfully!');
     } catch (e) {
       alert('Cannot create album, error: ' + JSON.stringify(e.errors));
     }

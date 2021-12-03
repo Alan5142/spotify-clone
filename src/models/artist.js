@@ -9,14 +9,16 @@ const artistSchema = new mongoose.Schema({
     password: String,
     artistType: String,
     albums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album' }],
-    // add fulltext search
-    
+    cover: String,
+    profile: String,
 }, {
     toObject: {
         transform: function (doc, ret) {
             delete ret.password;
             delete ret.__v;
             ret.id = ret._id;
+            ret.cover = ret.cover ? '/public/covers/' + ret.cover : undefined;
+            ret.profile = ret.profile ? '/public/covers/' + ret.profile : undefined;
         },
     },
 });
