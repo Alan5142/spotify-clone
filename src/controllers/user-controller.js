@@ -1,8 +1,20 @@
 import User from '../models/user.js';
+import Artist from '../models/artist.js';
 import '../data/mongo.js';
 import { encryptPassword } from '../utils/encrypt.js';
 
 export async function createUser(name, email, password) {
+    // check if user already exists
+    const currentUser = await User.findOne({ email });
+    if (currentUser) {
+        return null;
+    }
+    // check if artist with same email already exists
+    const artist = await Artist.findOne({ email: email });
+    if (artist) {
+        return null;
+    }
+    
     const hashedPassword = await encryptPassword(password);
     const user = new User({
         name,
@@ -10,6 +22,7 @@ export async function createUser(name, email, password) {
         password: hashedPassword,
     });
     await user.save();
+    return user;
 }
 
 // Get a user by id
@@ -27,4 +40,5 @@ export async function modifyUser(id, name, password) {
         user.password = await encryptPassword(password);
     }
     await user.save();
+    return user;
 }

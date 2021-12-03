@@ -6,6 +6,17 @@ import { encryptPassword } from "../utils/encrypt.js";
 import Album from '../models/album.js';
 
 export async function createArtist(name, email, password, description, type) {
+    // check if user already exists
+    const currentUser = await User.findOne({ email });
+    if (currentUser) {
+        return null;
+    }
+    // check if artist with same email already exists
+    const artist = await Artist.findOne({ email: email });
+    if (artist) {
+        return null;
+    }
+    
     const hashedPassword = await encryptPassword(password);
     const user = new Artist({
         name,
@@ -50,7 +61,7 @@ export async function modifyArtist(id, name, password, description, type) {
     return artist;
 }
 
-export async function createAlbum({artistId, name, releaseDate, trackNames, tracks, image, description, genres}) {
+export async function createAlbum({artistId, name, releaseDate, trackNames, tracks, image, description, genres, durations}) {
     const artist = await Artist.findById(artistId);
     if (!artist) {
         throw new Error(`Artist not found: ${artistId}`);
@@ -71,12 +82,14 @@ export async function createAlbum({artistId, name, releaseDate, trackNames, trac
     for (let i = 0; i < trackNames.length; i++) {
         const trackName = trackNames[i];
         const trackFile = tracks[i];
+        const duration = durations[i];
         const uploadedTrack = await uploadTrack(trackFile, trackName, album._id);
         const track = new Track({
             title: trackName,
             file: uploadedTrack,
             album: album._id,
-            artist: artist._id
+            artist: artist._id,
+            duration: duration,
         });
         tracksObject.push(track);
     }

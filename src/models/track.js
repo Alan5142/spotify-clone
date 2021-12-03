@@ -19,6 +19,10 @@ const trackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    duration: {
+        type: String,
+        required: true,
+    },
 }, {
     toObject: {
         transform: function (doc, ret) {
@@ -30,6 +34,8 @@ const trackSchema = new mongoose.Schema({
         },
     },
 },);
+
+trackSchema.index({ title: "text", artist: "text" });
 
 trackSchema.methods.toJSON = function () {
     const track = this.toObject();

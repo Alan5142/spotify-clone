@@ -9,6 +9,8 @@ const artistSchema = new mongoose.Schema({
     password: String,
     artistType: String,
     albums: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Album' }],
+    // add fulltext search
+    
 }, {
     toObject: {
         transform: function (doc, ret) {
@@ -18,9 +20,10 @@ const artistSchema = new mongoose.Schema({
         },
     },
 });
+artistSchema.index({ name: 'text', description: 'text' });
 
 artistSchema.methods.generateAuthToken = function () {
-    const token = jwt.sign({ id: this._id, userType: 'artist', type: this.artistType }, secret);
+    const token = jwt.sign({ id: this._id, userType: 'artist', type: this.artistType, name: this.name }, secret);
     return token;
 };
 

@@ -103,8 +103,6 @@ class AlbumItem extends HTMLElement {
         });
 
         const goToAlbum = () => {
-            console.log(this.data.artistId);
-            console.log(this.data);
             window.history.pushState({}, '', `/singstereo/artist/${this.data.artistId}/album/${this.data.id}`);
         };
 

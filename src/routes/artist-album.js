@@ -25,6 +25,7 @@ router.post('/',
     body('genres').custom(value => {
         return Array.isArray(value)
     }),
+    body('durations').isArray(),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
@@ -43,6 +44,7 @@ router.post('/',
                 description: req.body.description,
                 genres: req.body.genres,
                 trackNames: req.body.tracks,
+                durations: req.body.durations
             });
             res.status(201).json(album);
         } catch (e) {
