@@ -12,7 +12,7 @@ router.post("/",
     body('name').notEmpty(),
     body('email', 'Email not Valid').normalizeEmail().isEmail(),
     body('password', 'Password of minimum 6 characters long').isLength({ min: 6 }),
-    body('typeOf').notEmpty().isIn(['band', 'solo']),
+    body('typeOf').notEmpty().isIn(['band', 'soloist']),
     async (req, res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {

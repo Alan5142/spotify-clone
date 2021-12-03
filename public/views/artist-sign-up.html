@@ -27,11 +27,17 @@
             </div>
             <div class="mb-2">
                 <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password">
+                <input type="password" class="form-control" minlength="6" id="password">
             </div>
             <div class="mb-2">
                 <label for="rep-password" class="form-label">Repeat password</label>
                 <input type="password" class="form-control" id="rep-password">
+            </div>
+            <div>
+                <select id="artist-type">
+                    <option selected value="soloist">Solo</option>
+                    <option value="band">Band/Group</option>
+                </select>
             </div>
             <button type="submit" class="btn btn-success w-100">Submit</button>
         </form>
@@ -42,7 +48,7 @@
         </div>
     </div>
 
-    <script src="/public/js/login.js"></script>
+    <script type="module" src="/public/js/artist-signup.js"></script>
 </body>
 
 </html>
