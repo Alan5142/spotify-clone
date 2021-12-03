@@ -60,6 +60,7 @@ async function onUrlChange(url) {
         main.appendChild(albumPage);
     } else if (splitUrl.length === 3 && splitUrl[2] === 'my-account') {
         const userType = getUserType();
+        main.innerHTML = '';
         if (userType === 'user') {
             const { name, email } = await getMyInfo();
             const myAccount = new MyAccount({ name, email, type: 'user' });
