@@ -64,6 +64,19 @@ export async function requestSignUp({name, email, password}) {
     });
 }
 
+export async function requestArtistSignUp({name, email, password, typeOf}) {
+    return await fetchDOS('/api/artist', 
+    {
+        method: "POST",
+        body: {
+            name: name,
+            email: email,
+            password: password,
+            typeOf: typeOf
+        }
+    });
+}
+
 export async function getArtistById(id) {
     return await fetchDosWithAuth(`/api/artist/${id}`, {
         method: "GET",
