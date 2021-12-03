@@ -35,7 +35,7 @@ const trackSchema = new mongoose.Schema({
     },
 },);
 
-trackSchema.index({ title: "text", artist: 'text' }, {name: "TrackTextIndex", weights: { title: 1, artist: 1 }});
+trackSchema.index({ title: "text" });
 
 trackSchema.methods.toJSON = function () {
     const track = this.toObject();

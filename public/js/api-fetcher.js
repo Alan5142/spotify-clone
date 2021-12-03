@@ -1,4 +1,3 @@
-
 function isOk(status) {
     return status >= 200 && status < 300;
 }
@@ -67,6 +66,19 @@ export async function requestSignUp({name, email, password}) {
             name: name,
             email: email,
             password: password
+        }
+    });
+}
+
+export async function requestArtistSignUp({name, email, password, typeOf}) {
+    return await fetchDOS('/api/artist', 
+    {
+        method: "POST",
+        body: {
+            name: name,
+            email: email,
+            password: password,
+            typeOf: typeOf
         }
     });
 }
@@ -155,3 +167,8 @@ export function createAlbum({name, releaseDate, artistId, genres, cover, duratio
     });
 }
 
+export async function searchRequest(search){
+    return await fetchDosWithAuth('/api/search?search="'+search+'"', {
+        method: "GET"
+    });
+}

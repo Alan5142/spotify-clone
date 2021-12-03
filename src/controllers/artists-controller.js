@@ -2,6 +2,7 @@ import '../data/mongo.js';
 import { uploadCover, uploadTrack } from '../data/files.js';
 import Artist from '../models/artist.js';
 import Track from '../models/track.js';
+import User from '../models/user.js';
 import { encryptPassword } from "../utils/encrypt.js";
 import Album from '../models/album.js';
 
