@@ -1,4 +1,3 @@
-
 function isOk(status) {
     return status >= 200 && status < 300;
 }
@@ -168,3 +167,8 @@ export function createAlbum({name, releaseDate, artistId, genres, cover, duratio
     });
 }
 
+export async function searchRequest(search){
+    return await fetchDosWithAuth('/api/search?search="'+search+'"', {
+        method: "GET"
+    });
+}
