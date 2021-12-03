@@ -60,12 +60,12 @@ template.innerHTML = `
               
             </div>
           </div>
-          <div id="upload-progress" class="progress mt-2 d-none">
+        </div>
+        <div id="upload-progress" class="progress mt-2 d-none">
             <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
               25%
             </div>
           </div>
-        </div>
         <hr>
 
         <div id="track-list" class="d-flex flex-column">
@@ -74,6 +74,7 @@ template.innerHTML = `
           <label for="track-number">Track Number</label>
           <input class="mt-1" min="1" type="number" id="track-number" name="track-number" placeholder="Track number">
           <input accept=".mp3" class="mt-1" type="file" id="track-file" name="track-file">
+          <input type="text" id="track-duration" name="track-duration" hidden>
           <button type="button" id="add-track" class="btn btn-success mt-2">
             <i class="fas fa-plus"></i>Add track
           </button>
@@ -94,7 +95,7 @@ template.innerHTML = `
 
 function createGenreBadge(genre, onDelete) {
   const badge = document.createElement('span');
-  const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-danger', 'bg-warning', 'bg-info'];
+  const colors = ['bg-primary', 'bg-secondary', 'bg-success', 'bg-warning', 'bg-info'];
   badge.classList.add('badge',
     'rounded-pill',
     'position-relative',
@@ -171,11 +172,16 @@ class AddAlbum extends HTMLElement {
     });
 
     const addTrack = this.querySelector('#add-track');
-    addTrack.addEventListener('click', (e) => {
+    addTrack.addEventListener('click', async (e) => {
       const trackName = this.querySelector('#track-name');
       const trackFile = this.querySelector('#track-file');
       const trackNumber = this.querySelector('#track-number');
-      if (trackName.value === '' || trackFile.value === '' || trackNumber.value === '') {
+      const trackDuration = this.querySelector('#track-duration');
+
+      if (trackName.value === '' || trackFile.value === '' || trackNumber.value === '' || trackDuration.value === '') {
+        return;
+      }
+      if (this.tracks.find(track => track.number === trackName.number)) {
         return;
       }
 
@@ -185,6 +191,7 @@ class AddAlbum extends HTMLElement {
         name: trackName.value,
         number: trackNumber.value,
         file: trackFile.files[0],
+        duration: trackDuration.value,
       });
 
       this.tracks = this.tracks.sort((a, b) => a.number - b.number);
@@ -232,7 +239,42 @@ class AddAlbum extends HTMLElement {
         this.querySelector('#track-number').value = trackNumber;
       };
 
+      addTrack.disabled = true;
+      addTrack.innerHTML = `<div class="spinner-border text-light" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>`;
+
       reader.readAsArrayBuffer(file);
+
+      const audioReader = new FileReader();
+      audioReader.onload = async (e) => {
+        const audio = new Audio(audioReader.result);
+        const loadDuration = (audio) => {
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve(audio.duration);
+            }, 10000);
+            audio.addEventListener('durationchange', () => {
+              if (audio.duration !== Infinity) {
+                resolve(audio.duration);
+              }
+            })
+            audio.onerror = (e) => {
+              reject(e);
+            };
+          });
+        };
+        const audioDuration = await loadDuration(audio);
+        const duration = new Date(Math.ceil(audioDuration) * 1000).toISOString().substr(14, 5);
+        this.querySelector('#track-duration').value = duration;
+        addTrack.disabled = false;
+        addTrack.innerHTML = '<i class="fas fa-plus"></i>Add track';
+
+        audio.pause();
+        audio.remove();
+      };
+
+      audioReader.readAsDataURL(file);
     });
 
     const previewImage = this.querySelector('#preview-image');
@@ -276,18 +318,22 @@ class AddAlbum extends HTMLElement {
       inputs.forEach((input) => {
         input.disabled = true;
       });
-      console.log(name, releaseDate, genres, tracks, artistId);
       await createAlbum({
         name: albumName,
         releaseDate,
         artistId,
         genres,
         cover,
+        durations: tracks.map(track => track.duration),
         tracks: tracks.map(track => track.name),
         trackList: tracks.map(track => track.file),
-      }, (progress) => {
-        progressBar.style.width = `${progress}%`;
-        progressBar.value = `%${progress}`;
+      }, (event) => {
+        if (event.lengthComputable) {
+          const percent = Math.round((event.loaded / event.total) * 100);
+          console.log(percent);
+          progressBar.style.width = `${percent}%`;
+          progressBar.innerHTML = `${percent}%`;
+        }
       })
     } catch (e) {
       alert('Cannot create album, error: ' + JSON.stringify(e.errors));

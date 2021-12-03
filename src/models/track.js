@@ -19,6 +19,10 @@ const trackSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    duration: {
+        type: String,
+        required: true,
+    },
 }, {
     toObject: {
         transform: function (doc, ret) {

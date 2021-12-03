@@ -117,7 +117,7 @@ export async function editArtist({name, description, password, artistType}) {
     });
 }
 
-export function createAlbum({name, releaseDate, artistId, genres, cover, tracks, trackList}, progressCallback) {
+export function createAlbum({name, releaseDate, artistId, genres, cover, durations, tracks, trackList}, progressCallback) {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('releaseDate', releaseDate);
@@ -130,6 +130,10 @@ export function createAlbum({name, releaseDate, artistId, genres, cover, tracks,
     
     genres.forEach(genre => {
         formData.append('genres', genre);
+    });
+
+    durations.forEach(duration => {
+        formData.append('durations', duration);
     });
 
     const request = new XMLHttpRequest();
