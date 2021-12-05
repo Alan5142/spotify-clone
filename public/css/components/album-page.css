@@ -39,6 +39,11 @@
     font-weight: bold;
 }
 
+@media screen and (max-width: 768px) {
+    .album {
+        padding-bottom: 64px;
+    }
+
 .play-button {
     min-width: 64px;
     min-height: 64px;

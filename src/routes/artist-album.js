@@ -30,7 +30,6 @@ router.post('/',
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        console.log(req.body);
         if (req.files['trackFiles'].length != req.body.tracks.length) {
             return res.status(400).json({ msg: 'Invalid number of tracks' });
         }
