@@ -1,5 +1,6 @@
 body {
     overflow: hidden;
+    margin: 0px;
 }
 
 .ms-n5 {
@@ -35,4 +36,12 @@ a:hover {
 a:active {
     color: inherit;
     text-decoration: none;
+}
+
+@media screen and (max-width: 768px) {
+    .footer {
+        position: fixed;
+        bottom: 0px;
+        width: 100%;
+    }
 }

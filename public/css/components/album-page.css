@@ -35,8 +35,14 @@
 }
 
 .album {
-    font-family: 'Concert One'cursive;
+    font-family: 'Concert One' cursive;
     font-weight: bold;
+}
+
+@media screen and (max-width: 768px) {
+    .album {
+        padding-bottom: 64px;
+    }
 }
 
 .play-button {

@@ -3,7 +3,7 @@ const template = document.createElement('template');
 template.innerHTML = `
 <div class="playing-container ms-2">
     <div class="row w-100">
-        <div class="col-md-3 col-lg-2 col-sm-12">
+        <div class="col-md-3 col-lg-3 col-sm-12">
             <div class="playing-song-info d-flex align-items-center h-100">
                 <div class="playing-song-info-image pe-3">
                     <img alt="">
@@ -38,6 +38,7 @@ template.innerHTML = `
                 <p id="total-minutes" class="time-text mb-0 align-self-center ms-2">3:50</p>
             </div>
         </div>
+        <div class="col-1"> </div>
         <div class="col-md-2 col-sm-12 volume-container">
             <div class="d-flex h-100 w-100 align-items-center justify-content-center">
                 <i id="volume-icon" class="fas fa-volume-up"></i>
@@ -228,9 +229,20 @@ class NowPlaying extends HTMLElement {
         this.dispatchEvent(playEvent);
     }
 
+    emitStopEvent() {
+        const playEventDetail = {
+            trackId: this.data.id,
+        };
+        const playEvent = new CustomEvent('track-stop', {
+            detail: playEventDetail,
+        });
+        this.dispatchEvent(playEvent);
+    }
+
     next() {
         if (this.playlist.length === 0) {
             this.data = null;
+            this.emitStopEvent();
             this.update();
             return;
         }

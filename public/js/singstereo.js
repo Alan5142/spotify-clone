@@ -112,7 +112,6 @@ async function onUrlChange(url) {
 </div>
 `;
     }
-    console.log(url);
     main.scrollTo(0, 0);
 }
 
@@ -128,4 +127,24 @@ const logout = document.getElementById('logout-btn');
 logout.addEventListener('click', () => {
     localStorage.removeItem('token');
     window.location.href = '/login';
+});
+
+const nowPlaying = document.querySelector('now-playing');
+const footer = document.querySelector('footer');
+footer.style.display = 'none';
+
+nowPlaying.addEventListener('track-play', () => {
+    if (window.matchMedia('screen and (max-width: 768px)').matches) {
+        footer.style.height = '140px';
+        main.style.paddingBottom = '140px';
+    }
+    footer.style.display = '';
+});
+
+nowPlaying.addEventListener('track-stop', () => {
+    if (window.matchMedia('screen and (max-width: 768px)').matches) {
+        footer.style.height = '0px';
+        main.style.paddingBottom = '0px';
+    }
+    footer.style.display = 'none';
 });

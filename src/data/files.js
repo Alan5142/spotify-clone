@@ -90,6 +90,7 @@ export const trackRouter = Router({ mergeParams: true });
 trackRouter.get('/:id', async (req, res) => {
     try {
         const file = await getFile(req.params.id, "tracks");
+        res.set('Accept-Ranges', 'bytes');
         res.set('Content-Type', file.mime);
         res.send(file.buffer);
     } catch (error) {

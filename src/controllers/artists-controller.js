@@ -34,6 +34,11 @@ export async function getArtistById(id) {
     return await Artist.findById(id, undefined, {
         populate: {
             path: 'albums',
+            options: {
+                sort: {
+                    releaseDate: -1
+                },
+            },
             populate: {
                 path: 'tracks',
             },
